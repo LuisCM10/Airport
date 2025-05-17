@@ -1,5 +1,6 @@
 # Airport
-Integrantes:
+###NRC: 2250
+### Integrantes:
  - Sebastian Campillo Ordoñez
  - Luis Felipe Carrillo Molina
-* NRC: 2250
+
