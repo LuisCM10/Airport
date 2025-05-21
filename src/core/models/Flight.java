@@ -4,12 +4,12 @@
  */
 package core.models;
 
+import core.models.types.FlightType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Flight {
-
     private final String id;
     private final Plane plane;
     private final Location departureLocation;
@@ -21,6 +21,11 @@ public class Flight {
     private final int hoursDurationScale;
     private final int minutesDurationScale;
     private final List<Passenger> passengers;
+     private String code;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
+    private FlightType flightType;
+    private double basePrice;
 
     // Constructor para vuelo sin escala
     public Flight(String id, Plane plane, Location departureLocation, Location arrivalLocation,
@@ -43,6 +48,13 @@ public class Flight {
         this.minutesDurationArrival = minutesDurationArrival;
         this.hoursDurationScale = hoursDurationScale;
         this.minutesDurationScale = minutesDurationScale;
+    }
+     public Flight(String code, LocalDateTime departureTime, LocalDateTime arrivalTime, FlightType flightType, double basePrice) {
+        this.code = code;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.flightType = flightType;
+        this.basePrice = basePrice;
     }
 
     // Getters necesarios
