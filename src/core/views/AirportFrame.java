@@ -10,6 +10,7 @@ import core.models.Passenger;
 import core.models.Plane;
 import com.formdev.flatlaf.FlatDarkLaf;
 import core.controllers.PassengerController;
+import core.controllers.PlaneController;
 import core.controllers.utils.Response;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -1471,12 +1472,24 @@ public class AirportFrame extends javax.swing.JFrame {
         String id = airplaneId.getText();
         String brand = jTextField9.getText();
         String model = airplaneModel.getText();
-        int maxCapacity = Integer.parseInt(jTextField11.getText());
+        String maxCapacity = jTextField11.getText();
         String airline = airplaneAirline.getText();
 
-        this.planes.add(new Plane(id, brand, model, maxCapacity, airline));
-
-        this.flightPlane.addItem(id);
+        Response response = PlaneController.createPlane(id, brand, model, maxCapacity, airline);
+        if (response.getStatus() >= 500) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+        } else if (response.getStatus() >= 400) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
+            airplaneId.setText("");
+            jTextField9.setText("");
+            airplaneModel.setText("");
+            jTextField11.setText("");
+            airplaneAirline.setText("");
+            this.flightPlane.addItem(id);
+        }
+        
     }//GEN-LAST:event_btnCreateAirplaneActionPerformed
 
     private void btnAirportCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAirportCreateActionPerformed
