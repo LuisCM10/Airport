@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Flight {
-    private final String id;
+
+    private final String id ;
     private final Plane plane;
     private final Location departureLocation;
     private final Location scaleLocation;  // Puede ser null si no hay escala
@@ -21,16 +22,17 @@ public class Flight {
     private final int hoursDurationScale;
     private final int minutesDurationScale;
     private final List<Passenger> passengers;
-     private String code;
+    private String code;
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
     private FlightType flightType;
     private double basePrice;
-
+     
     // Constructor para vuelo sin escala
     public Flight(String id, Plane plane, Location departureLocation, Location arrivalLocation,
                   LocalDateTime departureDate, int hoursDurationArrival, int minutesDurationArrival) {
         this(id, plane, departureLocation, null, arrivalLocation, departureDate, hoursDurationArrival, minutesDurationArrival, 0, 0);
+      
     }
 
     // Constructor para vuelo con escala
@@ -49,13 +51,15 @@ public class Flight {
         this.hoursDurationScale = hoursDurationScale;
         this.minutesDurationScale = minutesDurationScale;
     }
-     public Flight(String code, LocalDateTime departureTime, LocalDateTime arrivalTime, FlightType flightType, double basePrice) {
+    public Flight(String code, LocalDateTime departureTime, LocalDateTime arrivalTime, FlightType flightType, double basePrice) {
         this.code = code;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.flightType = flightType;
         this.basePrice = basePrice;
+        
     }
+    
 
     // Getters necesarios
     public String getId() { return id; }
@@ -84,5 +88,11 @@ public int getHoursDurationArrival() {
 public int getMinutesDurationArrival() {
     return minutesDurationArrival;
 }
+public double getFinalFare() {
+        return flightType.calculateFare(basePrice);
+    }
 
+    public String getFlightTypeName() {
+        return flightType.getTypeName();
+    }
 }
