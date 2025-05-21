@@ -4,10 +4,17 @@
  */
 package core.services;
 
-/**
- *
- * @author Usuario
- */
+import core.models.Plane;
+import core.models.Flight;
+
 public class PlaneService {
-    
+
+    public void addFlight(Plane plane, Flight flight) {
+        plane.getFlights().add(flight);
+    }
+
+    public int getNumFlights(Plane plane) {
+        return plane.getFlights().size();
+    }
+   
 }

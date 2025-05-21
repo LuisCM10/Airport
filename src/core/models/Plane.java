@@ -7,10 +7,6 @@ package core.models;
 import core.models.Flight;
 import java.util.ArrayList;
 
-/**
- *
- * @author edangulo
- */
 public class Plane {
     
     private final String id;
@@ -29,36 +25,16 @@ public class Plane {
         this.flights = new ArrayList<>();
     }
 
-    public void addFlight(Flight flight) {
-        this.flights.add(flight);
-    }
-    
-    public String getId() {
-        return id;
-    }
+    // Getters
+    public String getId() { return id; }
+    public String getBrand() { return brand; }
+    public String getModel() { return model; }
+    public int getMaxCapacity() { return maxCapacity; }
+    public String getAirline() { return airline; }
+    public ArrayList<Flight> getFlights() { return flights; }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public int getMaxCapacity() {
-        return maxCapacity;
-    }
-
-    public String getAirline() {
-        return airline;
-    }
-
-    public ArrayList<Flight> getFlights() {
-        return flights;
-    }
-    
-    public int getNumFlights() {
-        return flights.size();
-    }
-    
+    // Setters si quieres cambiar algo
+    public void setBrand(String brand) { this.brand = brand; }
+    public void setModel(String model) { this.model = model; }
+    public void setAirline(String airline) { this.airline = airline; }
 }
