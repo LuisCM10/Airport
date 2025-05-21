@@ -92,8 +92,8 @@ public class AirportFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelRound1 = new core.views.PanelRound();
-        panelRound2 = new core.views.PanelRound();
+        panelRound1 = new org.netbeans.modules.form.InvalidComponent();
+        panelRound2 = new org.netbeans.modules.form.InvalidComponent();
         jButton13 = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -230,24 +230,12 @@ public class AirportFrame extends javax.swing.JFrame {
         jLabel48 = new javax.swing.JLabel();
         jComboBox8 = new javax.swing.JComboBox<>();
         jButton7 = new javax.swing.JButton();
-        panelRound3 = new core.views.PanelRound();
+        panelRound3 = new org.netbeans.modules.form.InvalidComponent();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
 
-        panelRound1.setRadius(40);
         panelRound1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        panelRound2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                panelRound2MouseDragged(evt);
-            }
-        });
-        panelRound2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                panelRound2MousePressed(evt);
-            }
-        });
 
         jButton13.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jButton13.setText("X");
@@ -407,7 +395,7 @@ public class AirportFrame extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel12.setText("Brand:");
         jPanel3.add(jLabel12);
-        jLabel12.setBounds(53, 157, 52, 25);
+        jLabel12.setBounds(53, 157, 50, 25);
 
         jTextField9.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jPanel3.add(jTextField9);
@@ -420,7 +408,7 @@ public class AirportFrame extends javax.swing.JFrame {
         jLabel13.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel13.setText("Model:");
         jPanel3.add(jLabel13);
-        jLabel13.setBounds(53, 216, 57, 25);
+        jLabel13.setBounds(53, 216, 55, 25);
 
         jTextField11.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jPanel3.add(jTextField11);
@@ -429,7 +417,7 @@ public class AirportFrame extends javax.swing.JFrame {
         jLabel14.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel14.setText("Max Capacity:");
         jPanel3.add(jLabel14);
-        jLabel14.setBounds(53, 276, 114, 25);
+        jLabel14.setBounds(53, 276, 109, 25);
 
         jTextField12.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jPanel3.add(jTextField12);
@@ -1396,81 +1384,129 @@ public class AirportFrame extends javax.swing.JFrame {
         this.setLocation(this.getLocation().x + evt.getX() - x, this.getLocation().y + evt.getY() - y);
     }//GEN-LAST:event_panelRound2MouseDragged
 
-    private void administratorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_administratorActionPerformed
-        if (user.isSelected()) {
-            user.setSelected(false);
-            userSelect.setSelectedIndex(0);
-
-        }
-        for (int i = 1; i < jTabbedPane1.getTabCount(); i++) {
-                jTabbedPane1.setEnabledAt(i, true);
-        }
-        jTabbedPane1.setEnabledAt(5, false);
-        jTabbedPane1.setEnabledAt(6, false);
-    }//GEN-LAST:event_administratorActionPerformed
-
-    private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
-        if (administrator.isSelected()) {
-            administrator.setSelected(false);
-        }
-        for (int i = 1; i < jTabbedPane1.getTabCount(); i++) {
-
-            jTabbedPane1.setEnabledAt(i, false);
-
-        }
-        jTabbedPane1.setEnabledAt(9, true);
-        jTabbedPane1.setEnabledAt(5, true);
-        jTabbedPane1.setEnabledAt(6, true);
-        jTabbedPane1.setEnabledAt(7, true);
-        jTabbedPane1.setEnabledAt(11, true);
-    }//GEN-LAST:event_userActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
-        long id = Long.parseLong(jTextField2.getText());
-        String firstname = jTextField7.getText();
-        String lastname = jTextField6.getText();
-        int year = Integer.parseInt(jTextField3.getText());
-        int month = Integer.parseInt(MONTH.getItemAt(MONTH.getSelectedIndex()));
-        int day = Integer.parseInt(DAY.getItemAt(DAY.getSelectedIndex()));
-        int phoneCode = Integer.parseInt(jTextField1.getText());
-        long phone = Long.parseLong(jTextField5.getText());
-        String country = jTextField4.getText();
+        String flightId = jComboBox7.getItemAt(jComboBox7.getSelectedIndex());
+        int hours = Integer.parseInt(jComboBox6.getItemAt(jComboBox6.getSelectedIndex()));
+        int minutes = Integer.parseInt(jComboBox8.getItemAt(jComboBox8.getSelectedIndex()));
+
+        Flight flight = null;
+        for (Flight f : this.flights) {
+            if (flightId.equals(f.getId())) {
+                flight = f;
+            }
+        }
+
+        flight.delay(hours, minutes);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) jTable5.getModel();
+        model.setRowCount(0);
+        for (Location location : this.locations) {
+            model.addRow(new Object[]{location.getAirportId(), location.getAirportName(), location.getAirportCity(), location.getAirportCountry()});
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
+        model.setRowCount(0);
+        for (Plane plane : this.planes) {
+            model.addRow(new Object[]{plane.getId(), plane.getBrand(), plane.getModel(), plane.getMaxCapacity(), plane.getAirline(), plane.getNumFlights()});
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+        model.setRowCount(0);
+        for (Flight flight : this.flights) {
+            model.addRow(new Object[]{flight.getId(), flight.getDepartureLocation().getAirportId(), flight.getArrivalLocation().getAirportId(), (flight.getScaleLocation() == null ? "-" : flight.getScaleLocation().getAirportId()), flight.getDepartureDate(), flight.calculateArrivalDate(), flight.getPlane().getId(), flight.getNumPassengers()});
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        model.setRowCount(0);
+        for (Passenger passenger : this.passengers) {
+            model.addRow(new Object[]{passenger.getId(), passenger.getFullname(), passenger.getBirthDate(), passenger.calculateAge(), passenger.generateFullPhone(), passenger.getCountry(), passenger.getNumFlights()});
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        long passengerId = Long.parseLong(userSelect.getItemAt(userSelect.getSelectedIndex()));
+
+        Passenger passenger = null;
+        for (Passenger p : this.passengers) {
+            if (p.getId() == passengerId) {
+                passenger = p;
+            }
+        }
+
+        ArrayList<Flight> flights = passenger.getFlights();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+        for (Flight flight : flights) {
+            model.addRow(new Object[]{flight.getId(), flight.getDepartureDate(), flight.calculateArrivalDate()});
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+        long passengerId = Long.parseLong(jTextField28.getText());
+        String flightId = jComboBox5.getItemAt(jComboBox5.getSelectedIndex());
+
+        Passenger passenger = null;
+        Flight flight = null;
+
+        for (Passenger p : this.passengers) {
+            if (p.getId() == passengerId) {
+                passenger = p;
+            }
+        }
+
+        for (Flight f : this.flights) {
+            if (flightId.equals(f.getId())) {
+                flight = f;
+            }
+        }
+
+        passenger.addFlight(flight);
+        flight.addPassenger(passenger);
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        long id = Long.parseLong(jTextField20.getText());
+        String firstname = jTextField22.getText();
+        String lastname = jTextField23.getText();
+        int year = Integer.parseInt(jTextField24.getText());
+        int month = Integer.parseInt(MONTH.getItemAt(MONTH5.getSelectedIndex()));
+        int day = Integer.parseInt(DAY.getItemAt(DAY5.getSelectedIndex()));
+        int phoneCode = Integer.parseInt(jTextField26.getText());
+        long phone = Long.parseLong(jTextField25.getText());
+        String country = jTextField27.getText();
 
         LocalDate birthDate = LocalDate.of(year, month, day);
 
-        this.passengers.add(new Passenger(id, firstname, lastname, birthDate, phoneCode, phone, country));
-        this.userSelect.addItem("" + id);
-    }//GEN-LAST:event_jButton8ActionPerformed
+        Passenger passenger = null;
+        for (Passenger p : this.passengers) {
+            if (p.getId() == id) {
+                passenger = p;
+            }
+        }
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
-        String id = jTextField8.getText();
-        String brand = jTextField9.getText();
-        String model = jTextField10.getText();
-        int maxCapacity = Integer.parseInt(jTextField11.getText());
-        String airline = jTextField12.getText();
-
-        this.planes.add(new Plane(id, brand, model, maxCapacity, airline));
-
-        this.jComboBox1.addItem(id);
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
-        String id = jTextField13.getText();
-        String name = jTextField14.getText();
-        String city = jTextField15.getText();
-        String country = jTextField16.getText();
-        double latitude = Double.parseDouble(jTextField17.getText());
-        double longitude = Double.parseDouble(jTextField18.getText());
-
-        this.locations.add(new Location(id, name, city, country, latitude, longitude));
-
-        this.jComboBox2.addItem(id);
-        this.jComboBox3.addItem(id);
-        this.jComboBox4.addItem(id);
-    }//GEN-LAST:event_jButton10ActionPerformed
+        passenger.setFirstname(firstname);
+        passenger.setLastname(lastname);
+        passenger.setBirthDate(birthDate);
+        passenger.setCountryPhoneCode(phoneCode);
+        passenger.setPhone(phone);
+        passenger.setCountry(country);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
@@ -1522,133 +1558,52 @@ public class AirportFrame extends javax.swing.JFrame {
         this.jComboBox5.addItem(id);
     }//GEN-LAST:event_jButton11ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
-        long id = Long.parseLong(jTextField20.getText());
-        String firstname = jTextField22.getText();
-        String lastname = jTextField23.getText();
-        int year = Integer.parseInt(jTextField24.getText());
-        int month = Integer.parseInt(MONTH.getItemAt(MONTH5.getSelectedIndex()));
-        int day = Integer.parseInt(DAY.getItemAt(DAY5.getSelectedIndex()));
-        int phoneCode = Integer.parseInt(jTextField26.getText());
-        long phone = Long.parseLong(jTextField25.getText());
-        String country = jTextField27.getText();
+        String id = jTextField13.getText();
+        String name = jTextField14.getText();
+        String city = jTextField15.getText();
+        String country = jTextField16.getText();
+        double latitude = Double.parseDouble(jTextField17.getText());
+        double longitude = Double.parseDouble(jTextField18.getText());
+
+        this.locations.add(new Location(id, name, city, country, latitude, longitude));
+
+        this.jComboBox2.addItem(id);
+        this.jComboBox3.addItem(id);
+        this.jComboBox4.addItem(id);
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        String id = jTextField8.getText();
+        String brand = jTextField9.getText();
+        String model = jTextField10.getText();
+        int maxCapacity = Integer.parseInt(jTextField11.getText());
+        String airline = jTextField12.getText();
+
+        this.planes.add(new Plane(id, brand, model, maxCapacity, airline));
+
+        this.jComboBox1.addItem(id);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        long id = Long.parseLong(jTextField2.getText());
+        String firstname = jTextField7.getText();
+        String lastname = jTextField6.getText();
+        int year = Integer.parseInt(jTextField3.getText());
+        int month = Integer.parseInt(MONTH.getItemAt(MONTH.getSelectedIndex()));
+        int day = Integer.parseInt(DAY.getItemAt(DAY.getSelectedIndex()));
+        int phoneCode = Integer.parseInt(jTextField1.getText());
+        long phone = Long.parseLong(jTextField5.getText());
+        String country = jTextField4.getText();
 
         LocalDate birthDate = LocalDate.of(year, month, day);
 
-        Passenger passenger = null;
-        for (Passenger p : this.passengers) {
-            if (p.getId() == id) {
-                passenger = p;
-            }
-        }
-
-        passenger.setFirstname(firstname);
-        passenger.setLastname(lastname);
-        passenger.setBirthDate(birthDate);
-        passenger.setCountryPhoneCode(phoneCode);
-        passenger.setPhone(phone);
-        passenger.setCountry(country);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
-        long passengerId = Long.parseLong(jTextField28.getText());
-        String flightId = jComboBox5.getItemAt(jComboBox5.getSelectedIndex());
-
-        Passenger passenger = null;
-        Flight flight = null;
-
-        for (Passenger p : this.passengers) {
-            if (p.getId() == passengerId) {
-                passenger = p;
-            }
-        }
-
-        for (Flight f : this.flights) {
-            if (flightId.equals(f.getId())) {
-                flight = f;
-            }
-        }
-
-        passenger.addFlight(flight);
-        flight.addPassenger(passenger);
-    }//GEN-LAST:event_jButton12ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-        String flightId = jComboBox7.getItemAt(jComboBox7.getSelectedIndex());
-        int hours = Integer.parseInt(jComboBox6.getItemAt(jComboBox6.getSelectedIndex()));
-        int minutes = Integer.parseInt(jComboBox8.getItemAt(jComboBox8.getSelectedIndex()));
-
-        Flight flight = null;
-        for (Flight f : this.flights) {
-            if (flightId.equals(f.getId())) {
-                flight = f;
-            }
-        }
-
-        flight.delay(hours, minutes);
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        long passengerId = Long.parseLong(userSelect.getItemAt(userSelect.getSelectedIndex()));
-
-        Passenger passenger = null;
-        for (Passenger p : this.passengers) {
-            if (p.getId() == passengerId) {
-                passenger = p;
-            }
-        }
-
-        ArrayList<Flight> flights = passenger.getFlights();
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
-        for (Flight flight : flights) {
-            model.addRow(new Object[]{flight.getId(), flight.getDepartureDate(), flight.calculateArrivalDate()});
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-        model.setRowCount(0);
-        for (Passenger passenger : this.passengers) {
-            model.addRow(new Object[]{passenger.getId(), passenger.getFullname(), passenger.getBirthDate(), passenger.calculateAge(), passenger.generateFullPhone(), passenger.getCountry(), passenger.getNumFlights()});
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
-        model.setRowCount(0);
-        for (Flight flight : this.flights) {
-            model.addRow(new Object[]{flight.getId(), flight.getDepartureLocation().getAirportId(), flight.getArrivalLocation().getAirportId(), (flight.getScaleLocation() == null ? "-" : flight.getScaleLocation().getAirportId()), flight.getDepartureDate(), flight.calculateArrivalDate(), flight.getPlane().getId(), flight.getNumPassengers()});
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
-        model.setRowCount(0);
-        for (Plane plane : this.planes) {
-            model.addRow(new Object[]{plane.getId(), plane.getBrand(), plane.getModel(), plane.getMaxCapacity(), plane.getAirline(), plane.getNumFlights()});
-        }
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) jTable5.getModel();
-        model.setRowCount(0);
-        for (Location location : this.locations) {
-            model.addRow(new Object[]{location.getAirportId(), location.getAirportName(), location.getAirportCity(), location.getAirportCountry()});
-        }
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_jButton13ActionPerformed
+        this.passengers.add(new Passenger(id, firstname, lastname, birthDate, phoneCode, phone, country));
+        this.userSelect.addItem("" + id);
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     private void userSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectActionPerformed
         try {
@@ -1664,6 +1619,39 @@ public class AirportFrame extends javax.swing.JFrame {
         } catch (Exception e) {
         }
     }//GEN-LAST:event_userSelectActionPerformed
+
+    private void administratorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_administratorActionPerformed
+        if (user.isSelected()) {
+            user.setSelected(false);
+            userSelect.setSelectedIndex(0);
+
+        }
+        for (int i = 1; i < jTabbedPane1.getTabCount(); i++) {
+            jTabbedPane1.setEnabledAt(i, true);
+        }
+        jTabbedPane1.setEnabledAt(5, false);
+        jTabbedPane1.setEnabledAt(6, false);
+    }//GEN-LAST:event_administratorActionPerformed
+
+    private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
+        if (administrator.isSelected()) {
+            administrator.setSelected(false);
+        }
+        for (int i = 1; i < jTabbedPane1.getTabCount(); i++) {
+
+            jTabbedPane1.setEnabledAt(i, false);
+
+        }
+        jTabbedPane1.setEnabledAt(9, true);
+        jTabbedPane1.setEnabledAt(5, true);
+        jTabbedPane1.setEnabledAt(6, true);
+        jTabbedPane1.setEnabledAt(7, true);
+        jTabbedPane1.setEnabledAt(11, true);
+    }//GEN-LAST:event_userActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jButton13ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1805,9 +1793,9 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
-    private core.views.PanelRound panelRound1;
-    private core.views.PanelRound panelRound2;
-    private core.views.PanelRound panelRound3;
+    private org.netbeans.modules.form.InvalidComponent panelRound1;
+    private org.netbeans.modules.form.InvalidComponent panelRound2;
+    private org.netbeans.modules.form.InvalidComponent panelRound3;
     private javax.swing.JRadioButton user;
     private javax.swing.JComboBox<String> userSelect;
     // End of variables declaration//GEN-END:variables
