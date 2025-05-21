@@ -4,6 +4,8 @@
  */
 package core.models;
 
+import core.models.types.AirportType;
+
 /**
  *
  * @author edangulo
@@ -16,14 +18,18 @@ public class Location {
     private String airportCountry;
     private double airportLatitude;
     private double airportLongitude;
+    private final AirportType airportType;
 
-    public Location(String airportId, String airportName, String airportCity, String airportCountry, double airportLatitude, double airportLongitude) {
+    
+    public Location(String airportId, String airportName, String airportCity, String airportCountry,
+                    double airportLatitude, double airportLongitude, AirportType airportType) {
         this.airportId = airportId;
         this.airportName = airportName;
         this.airportCity = airportCity;
         this.airportCountry = airportCountry;
         this.airportLatitude = airportLatitude;
         this.airportLongitude = airportLongitude;
+        this.airportType = airportType;
     }
 
     public String getAirportId() {
@@ -48,6 +54,9 @@ public class Location {
 
     public double getAirportLongitude() {
         return airportLongitude;
+    }
+     public AirportType getAirportType() {
+        return airportType;
     }
     
 }
