@@ -51,14 +51,28 @@ public class Flight {
         this.hoursDurationScale = hoursDurationScale;
         this.minutesDurationScale = minutesDurationScale;
     }
-    public Flight(String code, LocalDateTime departureTime, LocalDateTime arrivalTime, FlightType flightType, double basePrice) {
-        this.code = code;
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
-        this.flightType = flightType;
-        this.basePrice = basePrice;
-        
-    }
+public Flight(String id, Plane plane, Location departureLocation, Location scaleLocation,
+              Location arrivalLocation, LocalDateTime departureTime, LocalDateTime arrivalTime,
+              int hoursDurationArrival, int minutesDurationArrival,
+              int hoursDurationScale, int minutesDurationScale,
+              FlightType flightType, double basePrice) {
+
+    this.id = id;
+    this.plane = plane;
+    this.departureLocation = departureLocation;
+    this.scaleLocation = scaleLocation;
+    this.arrivalLocation = arrivalLocation;
+    this.departureTime = departureTime;
+    this.arrivalTime = arrivalTime;
+    this.hoursDurationArrival = hoursDurationArrival;
+    this.minutesDurationArrival = minutesDurationArrival;
+    this.hoursDurationScale = hoursDurationScale;
+    this.minutesDurationScale = minutesDurationScale;
+    this.flightType = flightType;
+    this.basePrice = basePrice;
+    this.passengers = new ArrayList<>();
+}
+
     
 
     // Getters necesarios
