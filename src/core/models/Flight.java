@@ -57,4 +57,20 @@ public class Flight {
     public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
     }
+    public int getHoursDurationScale() {
+    return hoursDurationScale;
+}
+
+public int getMinutesDurationScale() {
+    return minutesDurationScale;
+}
+
+public int getHoursDurationArrival() {
+    return hoursDurationArrival;
+}
+
+public int getMinutesDurationArrival() {
+    return minutesDurationArrival;
+}
+
 }
