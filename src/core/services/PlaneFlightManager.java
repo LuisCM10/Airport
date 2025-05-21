@@ -8,6 +8,13 @@ package core.services;
  *
  * @author Usuario
  */
+import core.models.Flight;
+import core.models.Plane;
+import java.util.List;
+
 public interface PlaneFlightManager {
-    
+    void addFlight(Plane plane, Flight flight);
+    List<Flight> getFlights(Plane plane);
+    // Puedes agregar otros métodos necesarios, como remover vuelo, etc.
 }
+

@@ -8,6 +8,20 @@ package core.services;
  *
  * @author Usuario
  */
-public class PlaneFlightManagerImpl {
-    
+
+import core.models.Flight;
+import core.models.Plane;
+import java.util.List;
+
+public class PlaneFlightManagerImpl implements PlaneFlightManager {
+
+    @Override
+    public void addFlight(Plane plane, Flight flight) {
+        plane.getFlights().add(flight);
+    }
+
+    @Override
+    public List<Flight> getFlights(Plane plane) {
+        return plane.getFlights();
+    }
 }
