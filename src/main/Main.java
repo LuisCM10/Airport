@@ -14,6 +14,12 @@ import core.models.Plane;
 import core.models.types.AirportType;
 import core.models.types.InternationalAirport;
 import core.models.types.NationalAirport;
+import core.services.FlightManager;
+import core.services.PassengerFlightManager;
+import core.services.PassengerService;
+import core.services.PlaneFlightManager;
+import core.services.PlaneFlightManagerImpl;
+import core.services.PlaneService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.nio.file.Files;
@@ -26,10 +32,15 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
+        PlaneFlightManager flightManager = new PlaneFlightManagerImpl();
+        PlaneService planeService = new PlaneService(flightManager);
+        FlightManager passengerFlightManager = new PassengerFlightManager();  
+        PassengerService passengerService = new PassengerService(passengerFlightManager); 
+
         try {
             // Cargar datos de aeropuertos
             ArrayList<Location> locations = new ArrayList<>();
-            String content = new String(Files.readAllBytes(Paths.get("data/locations.json")));
+            String content = new String(Files.readAllBytes(Paths.get("json/locations.json")));
             JSONArray locationsArray = new JSONArray(content);
             for (int i = 0; i < locationsArray.length(); i++) {
                 JSONObject loc = locationsArray.getJSONObject(i);
@@ -103,10 +114,11 @@ public class Main {
             }
 
             // Establecer relaciones entre objetos
-            for (Flight flight : flights) {
-                flight.getPlane().addFlight(flight); // Agregar vuelo al avión
+    for (Flight flight : flights) {
+                planeService.assignFlight(flight.getPlane(), flight);
+
                 for (Passenger passenger : flight.getPassengers()) {
-                    passenger.addFlight(flight); // Agregar vuelo al pasajero
+                    passengerService.addFlight(passenger, flight);  // <-- Cambiado para usar servicio
                 }
             }
 

@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface PlaneFlightManager {
     void addFlight(Plane plane, Flight flight);
+    void removeFlight(Plane plane, Flight flight);
     List<Flight> getFlights(Plane plane);
-    // Puedes agregar otros métodos necesarios, como remover vuelo, etc.
+    boolean canAddFlight(Plane plane);
 }
-

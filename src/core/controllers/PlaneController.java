@@ -6,15 +6,29 @@ package core.controllers;
 
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
+import core.models.Flight;
 import core.models.Plane;
 import core.models.storage.Storage;
+import core.services.PlaneService;
 
 /**
  *
  * @author ASUS
  */
 public class PlaneController {
-
+  private final PlaneService planeService;
+    
+    public PlaneController(PlaneService planeService) {
+        this.planeService = planeService;
+    }
+    
+    public String assignFlightToPlane(Plane plane, Flight flight) {
+        if (planeService.isFlightAssignable(plane)) {
+            planeService.assignFlight(plane, flight);
+            return "Vuelo asignado al avión " + plane.getId();
+        }
+        return "Error: Capacidad llena";
+    }
     public static Response createPlane(String id, String brand, String model, String maxCapacity, String airline) {
         try {
             int maxCapacityInt;
