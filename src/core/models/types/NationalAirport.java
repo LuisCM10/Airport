@@ -8,11 +8,14 @@ package core.models.types;
  *
  * @author Usuario
  */
-public class RegionalAirport implements AirportType {
+
+public class NationalAirport implements AirportType {
+
     @Override
     public String getTypeName() {
-        return "Regional";
+        return "nacional";
     }
+
     @Override
     public boolean allowsInternationalFlights() {
         return false;
