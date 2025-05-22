@@ -96,8 +96,8 @@ public class AirportFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelRound1 = new org.netbeans.modules.form.InvalidComponent();
-        panelRound2 = new org.netbeans.modules.form.InvalidComponent();
+        panelRound1 = new core.views.PanelRound();
+        panelRound2 = new core.views.PanelRound();
         jButton13 = new javax.swing.JButton();
         passTable = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -239,7 +239,19 @@ public class AirportFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
 
+        panelRound1.setRadius(40);
         panelRound1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        panelRound2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                panelRound2MouseDragged(evt);
+            }
+        });
+        panelRound2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                panelRound2MousePressed(evt);
+            }
+        });
 
         jButton13.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jButton13.setText("X");
@@ -417,7 +429,7 @@ public class AirportFrame extends javax.swing.JFrame {
         jLabel13.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jLabel13.setText("Model:");
         jPanel3.add(jLabel13);
-        jLabel13.setBounds(53, 216, 55, 25);
+        jLabel13.setBounds(53, 216, 57, 25);
 
         jTextField11.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jPanel3.add(jTextField11);
@@ -1538,7 +1550,7 @@ public class AirportFrame extends javax.swing.JFrame {
         }
 
         if (scale == null) {
-            this.flights.add(new Flight(id, plane, departure, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival, null));
+            this.flights.add(new Flight(id, plane, departure, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival));
         } else {
             this.flights.add(new Flight(id, plane, departure, scale, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival, hoursDurationsScale, minutesDurationsScale));
         }

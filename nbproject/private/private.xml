@@ -3,20 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/C:/Users/Usuario/Documents/Airport/src/core/models/Flight.java</file>
-            <file>file:/C:/Users/Usuario/Documents/Airport/src/core/models/Plane.java</file>
-            <file>file:/C:/Users/Usuario/Documents/Airport/src/core/services/PassengerService.java</file>
-            <file>file:/C:/Users/Usuario/Documents/Airport/src/core/models/Location.java</file>
-            <file>file:/C:/Users/Usuario/Documents/Airport/src/core/models/Passenger.java</file>
-            <file>file:/C:/Users/Usuario/Documents/Airport/src/core/services/FlightService.java</file>
-            <file>file:/C:/Users/Usuario/Documents/Airport/src/core/services/PlaneService.java</file>
-=======
-            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/models/Passenger.java</file>
-            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/controllers/PassengerController.java</file>
             <file>file:/C:/Users/ASUS/Desktop/Airport/src/main/Main.java</file>
             <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/views/AirportFrame.java</file>
->>>>>>> Luis
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/models/Passenger.java</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/models/Flight.java</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/models/Plane.java</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/models/Location.java</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/views/PanelRound.java</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/nbproject/private/private.properties</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/controllers/PassengerController.java</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/controllers/PlaneController.java</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/controllers/LocationController.java</file>
+            <file>file:/C:/Users/ASUS/Desktop/Airport/src/core/controllers/FlightController.java</file>
         </group>
     </open-files>
 </project-private>
