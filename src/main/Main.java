@@ -7,38 +7,31 @@ package main;
 import com.formdev.flatlaf.FlatDarkLaf;
 import core.views.AirportFrame;
 import javax.swing.UIManager;
-import core.models.Flight;
-import core.models.Location;
-import core.models.Passenger;
-import core.models.Plane;
-import core.models.types.AirportType;
-import core.models.types.InternationalAirport;
-import core.models.types.NationalAirport;
-import core.services.FlightManager;
-import core.services.PassengerFlightManager;
-import core.services.PassengerService;
-import core.services.PlaneFlightManager;
-import core.services.PlaneFlightManagerImpl;
-import core.services.PlaneService;
+
+import core.models.*;
+import core.models.types.*;
+import core.services.*;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-
-
 public class Main {
     public static void main(String[] args) {
+        // Inicializar servicios
         PlaneFlightManager flightManager = new PlaneFlightManagerImpl();
         PlaneService planeService = new PlaneService(flightManager);
-        FlightManager passengerFlightManager = new PassengerFlightManager();  
-        PassengerService passengerService = new PassengerService(passengerFlightManager); 
+        FlightManager passengerFlightManager = new PassengerFlightManager();
+        PassengerService passengerService = new PassengerService(passengerFlightManager);
+        FlightService flightService = new FlightService(); // NUEVO SERVICIO
 
         try {
-            // Cargar datos de aeropuertos
+            // 1. Leer ubicaciones
             ArrayList<Location> locations = new ArrayList<>();
             String content = new String(Files.readAllBytes(Paths.get("json/locations.json")));
             JSONArray locationsArray = new JSONArray(content);
@@ -48,85 +41,119 @@ public class Main {
                 String airportName = loc.getString("airportName");
                 String airportCity = loc.getString("airportCity");
                 String airportCountry = loc.getString("airportCountry");
-                double airportLatitude = loc.getDouble("airportLatitude");
-                double airportLongitude = loc.getDouble("airportLongitude");
-                AirportType airportType = (airportCountry.equals("USA")) ? new NationalAirport() : new InternationalAirport();
-                Location location = new Location(airportId, airportName, airportCity, airportCountry, airportLatitude, airportLongitude, airportType);
+                double latitude = loc.getDouble("airportLatitude");
+                double longitude = loc.getDouble("airportLongitude");
+
+                AirportType type = (airportCountry.equals("USA")) ? new NationalAirport() : new InternationalAirport();
+                Location location = new Location(airportId, airportName, airportCity, airportCountry, latitude, longitude, type);
                 locations.add(location);
             }
 
-            // Cargar datos de aviones
+            // 2. Leer aviones
             ArrayList<Plane> planes = new ArrayList<>();
             content = new String(Files.readAllBytes(Paths.get("json/planes.json")));
             JSONArray planesArray = new JSONArray(content);
             for (int i = 0; i < planesArray.length(); i++) {
-                JSONObject planeJson = planesArray.getJSONObject(i);
-                String id = planeJson.getString("id");
-                String brand = planeJson.getString("brand");
-                String model = planeJson.getString("model");
-                int maxCapacity = planeJson.getInt("maxCapacity");
-                String airline = planeJson.getString("airline");
-                Plane plane = new Plane(id, brand, model, maxCapacity, airline);
+                JSONObject p = planesArray.getJSONObject(i);
+                Plane plane = new Plane(
+                    p.getString("id"),
+                    p.getString("brand"),
+                    p.getString("model"),
+                    p.getInt("maxCapacity"),
+                    p.getString("airline")
+                );
                 planes.add(plane);
             }
 
-            // Cargar datos de pasajeros
+            // 3. Leer pasajeros
             ArrayList<Passenger> passengers = new ArrayList<>();
             content = new String(Files.readAllBytes(Paths.get("json/passengers.json")));
-            JSONArray passengersArray = new JSONArray(content);
-            for (int i = 0; i < passengersArray.length(); i++) {
-                JSONObject passengerJson = passengersArray.getJSONObject(i);
-                long id = passengerJson.getLong("id");
-                String firstname = passengerJson.getString("firstname");
-                String lastname = passengerJson.getString("lastname");
-                LocalDate birthDate = LocalDate.parse(passengerJson.getString("birthDate"));
-                int countryPhoneCode = passengerJson.getInt("countryPhoneCode");
-                long phone = passengerJson.getLong("phone");
-                String country = passengerJson.getString("country");
-                Passenger passenger = new Passenger(id, firstname, lastname, birthDate, countryPhoneCode, phone, country);
+            JSONArray passengerArray = new JSONArray(content);
+            for (int i = 0; i < passengerArray.length(); i++) {
+                JSONObject p = passengerArray.getJSONObject(i);
+                Passenger passenger = new Passenger(
+                    p.getLong("id"),
+                    p.getString("firstname"),
+                    p.getString("lastname"),
+                    LocalDate.parse(p.getString("birthDate")),
+                    p.getInt("countryPhoneCode"),
+                    p.getLong("phone"),
+                    p.getString("country")
+                );
                 passengers.add(passenger);
             }
 
-            // Cargar datos de vuelos
+            // 4. Leer vuelos
             ArrayList<Flight> flights = new ArrayList<>();
             content = new String(Files.readAllBytes(Paths.get("json/flights.json")));
-            JSONArray flightsArray = new JSONArray(content);
-            for (int i = 0; i < flightsArray.length(); i++) {
-                JSONObject flightJson = flightsArray.getJSONObject(i);
-                String id = flightJson.getString("id");
-                String planeId = flightJson.getString("plane");
-                String departureLocationId = flightJson.getString("departureLocation");
-                String arrivalLocationId = flightJson.getString("arrivalLocation");
-                String scaleLocationId = flightJson.optString("scaleLocation", null);
-                LocalDateTime departureDate = LocalDateTime.parse(flightJson.getString("departureDate"));
-                int hoursDurationArrival = flightJson.getInt("hoursDurationArrival");
-                int minutesDurationArrival = flightJson.getInt("minutesDurationArrival");
-                int hoursDurationScale = flightJson.getInt("hoursDurationScale");
-                int minutesDurationScale = flightJson.getInt("minutesDurationScale");
+            JSONArray flightArray = new JSONArray(content);
+            for (int i = 0; i < flightArray.length(); i++) {
+                JSONObject f = flightArray.getJSONObject(i);
+
+                String id = f.getString("id");
+                String planeId = f.getString("plane");
+                String departureId = f.getString("departureLocation");
+                String arrivalId = f.getString("arrivalLocation");
+                String scaleId = f.optString("scaleLocation", null);
 
                 Plane plane = planes.stream().filter(p -> p.getId().equals(planeId)).findFirst().orElse(null);
-                Location departureLocation = locations.stream().filter(l -> l.getAirportId().equals(departureLocationId)).findFirst().orElse(null);
-                Location arrivalLocation = locations.stream().filter(l -> l.getAirportId().equals(arrivalLocationId)).findFirst().orElse(null);
-                Location scaleLocation = (scaleLocationId != null) ? locations.stream().filter(l -> l.getAirportId().equals(scaleLocationId)).findFirst().orElse(null) : null;
+                Location departure = locations.stream().filter(l -> l.getAirportId().equals(departureId)).findFirst().orElse(null);
+                Location arrival = locations.stream().filter(l -> l.getAirportId().equals(arrivalId)).findFirst().orElse(null);
+                Location scale = (scaleId != null && !scaleId.isEmpty())
+                        ? locations.stream().filter(l -> l.getAirportId().equals(scaleId)).findFirst().orElse(null)
+                        : null;
 
-                Flight flight = new Flight(id, plane, departureLocation, scaleLocation, arrivalLocation, departureDate, hoursDurationArrival, minutesDurationArrival, hoursDurationScale, minutesDurationScale);
+                LocalDateTime departureDate = LocalDateTime.parse(f.getString("departureDate"));
+                int hArrival = f.getInt("hoursDurationArrival");
+                int mArrival = f.getInt("minutesDurationArrival");
+                int hScale = f.getInt("hoursDurationScale");
+                int mScale = f.getInt("minutesDurationScale");
+
+                Flight flight = new Flight(id, plane, departure, scale, arrival, departureDate, hArrival, mArrival, hScale, mScale);
                 flights.add(flight);
             }
 
-            // Establecer relaciones entre objetos
-    for (Flight flight : flights) {
+            // 5. Relacionar vuelos con aviones y pasajeros
+            for (Flight flight : flights) {
                 planeService.assignFlight(flight.getPlane(), flight);
+            }
 
-                for (Passenger passenger : flight.getPassengers()) {
-                    passengerService.addFlight(passenger, flight);  // <-- Cambiado para usar servicio
-                }
+            // 6. Asignar a cada pasajero su primer vuelo usando FlightService
+            for (int i = 0; i < Math.min(flights.size(), passengers.size()); i++) {
+                Flight flight = flights.get(i);
+                Passenger passenger = passengers.get(i);
+
+                flightService.addPassenger(flight, passenger);            // Asignar al vuelo
+                passengerService.addFlight(passenger, flight);           // Asignar al pasajero
+
+                System.out.println("✅ Pasajero " + passenger.getFirstname() + " agregado al vuelo " + flight.getId());
+
+                // Mostrar info adicional con FlightService
+                System.out.println("🛫 Salida: " + flight.getDepartureDate());
+                System.out.println("🛬 Llegada estimada: " + flightService.calculateArrivalDate(flight));
+
+                // Simular retraso de 1h15
+                flightService.delayFlight(flight, 1, 15);
+                System.out.println("⏱️ Nuevo horario de salida: " + flight.getDepartureDate());
+
+                System.out.println("👤 Total pasajeros en vuelo " + flight.getId() + ": " + flightService.getNumPassengers(flight));
+                System.out.println("----------------------------------------------------");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Interfaz gráfica (opcional)
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+            new AirportFrame();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
+
 
 
 

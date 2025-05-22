@@ -16,6 +16,5 @@ import java.util.List;
 public interface FlightManager {
     void addFlight(Passenger passenger, Flight flight);
     List<Flight> getFlights(Passenger passenger);
-    // otros métodos necesarios
 }
 
