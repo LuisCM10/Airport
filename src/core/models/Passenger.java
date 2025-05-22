@@ -47,5 +47,8 @@ public class Passenger {
     public void setCountryPhoneCode(int countryPhoneCode) { this.countryPhoneCode = countryPhoneCode; }
     public void setPhone(long phone) { this.phone = phone; }
     public void setCountry(String country) { this.country = country; }
-    public void setFlights(ArrayList<Flight> flights) { this.flights = flights; }
+    public void addFlight(Flight flight) { 
+        this.flights.add(flight);
+        flight.addPassenger(this);
+    }
 }

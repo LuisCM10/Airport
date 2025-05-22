@@ -109,4 +109,8 @@ public double getFinalFare() {
     public String getFlightTypeName() {
         return flightType.getTypeName();
     }
+    
+    public void addPassenger(Passenger passenger){
+        this.passengers.add(passenger);
+    }
 }
