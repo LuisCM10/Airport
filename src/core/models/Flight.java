@@ -73,8 +73,8 @@ public Flight(String id, Plane plane, Location departureLocation, Location scale
     this.passengers = new ArrayList<>();
 }
 
-    
 
+    
     // Getters necesarios
     public String getId() { return id; }
     public Plane getPlane() { return plane; }

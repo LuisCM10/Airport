@@ -24,7 +24,10 @@ public class Plane {
         this.airline = airline;
         this.flights = new ArrayList<>();
     }
-
+    public void addFlight(Flight flight) {
+           flights.add(flight);
+           // Additional logic can be added here if needed
+       }
     // Getters
     public String getId() { return id; }
     public String getBrand() { return brand; }

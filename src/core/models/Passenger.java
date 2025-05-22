@@ -29,7 +29,7 @@ public class Passenger {
         this.country = country;
         this.flights = new ArrayList<>();
     }
-
+    
     // Getters (obligatorios para PassengerService)
     public long getId() { return id; }
     public String getFirstname() { return firstname; }
