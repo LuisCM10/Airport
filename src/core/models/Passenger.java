@@ -8,7 +8,7 @@ import core.models.Flight;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Passenger {
+public class Passenger implements Cloneable {
     
     private final long id;
     private String firstname;

@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-    package core.services;
+    package core.models.services;
 
 import core.models.Flight;
 import core.models.Passenger;

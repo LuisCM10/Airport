@@ -7,7 +7,7 @@ package core.models;
 import core.models.Flight;
 import java.util.ArrayList;
 
-public class Plane {
+public class Plane implements Cloneable{
     
     private final String id;
     private String brand;

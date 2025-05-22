@@ -10,7 +10,7 @@ import core.models.types.AirportType;
  *
  * @author edangulo
  */
-public class Location {
+public class Location implements Cloneable {
     
     private final String airportId;
     private String airportName;
@@ -18,18 +18,16 @@ public class Location {
     private String airportCountry;
     private double airportLatitude;
     private double airportLongitude;
-    private final AirportType airportType;
 
     
     public Location(String airportId, String airportName, String airportCity, String airportCountry,
-                    double airportLatitude, double airportLongitude, AirportType airportType) {
+                    double airportLatitude, double airportLongitude) {
         this.airportId = airportId;
         this.airportName = airportName;
         this.airportCity = airportCity;
         this.airportCountry = airportCountry;
         this.airportLatitude = airportLatitude;
         this.airportLongitude = airportLongitude;
-        this.airportType = airportType;
     }
 
     public String getAirportId() {

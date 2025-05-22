@@ -4,13 +4,19 @@
  */
 package main;
 
+import core.models.services.PassengerFlightManager;
+import core.models.services.PassengerService;
+import core.models.services.PlaneService;
+import core.models.services.PlaneFlightManager;
+import core.models.services.FlightService;
+import core.models.services.FlightManager;
+import core.models.services.PlaneFlightManagerImpl;
 import com.formdev.flatlaf.FlatDarkLaf;
 import core.views.AirportFrame;
 import javax.swing.UIManager;
 
 import core.models.*;
 import core.models.types.*;
-import core.services.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
