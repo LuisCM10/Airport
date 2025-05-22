@@ -4,10 +4,16 @@
  */
 package core.controllers;
 
+import core.controllers.utils.Response;
+
 /**
  *
  * @author ASUS
  */
 public class FlightController {
+
+    static Response readFlight(String flightId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }
