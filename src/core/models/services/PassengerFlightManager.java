@@ -10,7 +10,6 @@ package core.models.services;
  */
 import core.models.Flight;
 import core.models.Passenger;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PassengerFlightManager implements FlightManager {
