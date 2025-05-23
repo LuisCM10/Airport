@@ -9,6 +9,7 @@ import core.controllers.utils.Status;
 import core.models.Flight;
 import core.models.Location;
 import core.models.Plane;
+import core.models.services.FlightService;
 import core.models.storage.Storage;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
@@ -86,7 +87,7 @@ public class FlightController {
                 minutesInt = Integer.parseInt(minutes);
             } catch (NumberFormatException ex) {
                 return new Response("Minutes must be selected", Status.BAD_REQUEST);
-            }           
+            }            
             try {
                 departureDate = LocalDateTime.of(yearInt, monthInt, dayInt, hourInt, minutesInt);
             } catch (DateTimeException ex) {
@@ -222,7 +223,14 @@ public class FlightController {
             } catch (NumberFormatException ex) {
                 return new Response("Minutes must be selected", Status.BAD_REQUEST);
             }  
-            flight
+            
+            if (hourInt == 0 && minuteInt == 0) {
+                return new Response("Delay duration must be greater than 00:00", Status.BAD_REQUEST);
+            }
+            
+            FlightService.delayFlight(flight, hourInt, minuteInt);
+            return new Response("Delay set correctly", Status.OK);
+            
         }catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }

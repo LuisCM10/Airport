@@ -1625,17 +1625,20 @@ public class AirportFrame extends javax.swing.JFrame {
     private void btnFlightDelayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFlightDelayActionPerformed
         // TODO add your handling code here:
         String flightId = flightDelayId.getItemAt(flightDelayId.getSelectedIndex());
-        int hours = Integer.parseInt(flightDelayHour.getItemAt(flightDelayHour.getSelectedIndex()));
-        int minutes = Integer.parseInt(flightDelayMinute.getItemAt(flightDelayMinute.getSelectedIndex()));
-
-        Flight flight = null;
-        for (Flight f : this.flights) {
-            if (flightId.equals(f.getId())) {
-                flight = f;
-            }
+        String hours = flightDelayHour.getItemAt(flightDelayHour.getSelectedIndex());
+        String minutes = "" + flightDelayMinute.getItemAt(flightDelayMinute.getSelectedIndex());
+        
+        Response response = FlightController.delayFlight(flightId, hours, minutes);
+        if (response.getStatus() >= 500) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+        } else if (response.getStatus() >= 400) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
+            flightDelayId.setSelectedIndex(0);
+            flightDelayHour.setSelectedIndex(0);
+            flightDelayMinute.setSelectedIndex(0);
         }
-
-        flight.delay(hours, minutes);
     }//GEN-LAST:event_btnFlightDelayActionPerformed
 
     private void btnRefreshPassFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPassFlightsActionPerformed

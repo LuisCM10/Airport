@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 public class FlightService {
 
     // Agrega un pasajero al vuelo
-    public void addPassenger(Flight flight, Passenger passenger) {
+    public static void addPassenger(Flight flight, Passenger passenger) {
         flight.getPassengers().add(passenger);
     }
 
     // Calcula la fecha y hora de llegada considerando escala y duración total
-    public LocalDateTime calculateArrivalDate(Flight flight) {
+    public static LocalDateTime calculateArrivalDate(Flight flight) {
         return flight.getDepartureDate()
                 .plusHours(flight.getHoursDurationScale())
                 .plusMinutes(flight.getMinutesDurationScale())
@@ -26,7 +26,7 @@ public class FlightService {
     }
 
     // Retrasa la salida del vuelo
-    public void delayFlight(Flight flight, int hours, int minutes) {
+    public static void delayFlight(Flight flight, int hours, int minutes) {
         LocalDateTime newDeparture = flight.getDepartureDate()
                 .plusHours(hours)
                 .plusMinutes(minutes);
@@ -34,7 +34,7 @@ public class FlightService {
     }
 
     // Retorna el número total de pasajeros del vuelo
-    public int getNumPassengers(Flight flight) {
+    public static int getNumPassengers(Flight flight) {
         return flight.getPassengers().size();
     }
 }
