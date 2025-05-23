@@ -8,13 +8,14 @@ import core.models.Flight;
 import core.models.Location;
 import core.models.Passenger;
 import core.models.Plane;
+import core.models.observers.Observable;
 import java.util.ArrayList;
 
 /**
  *
  * @author ASUS
  */
-public class Storage {
+public class Storage extends Observable{
 
     private ArrayList<Passenger> passengers;
     private ArrayList<Plane> planes;
@@ -24,6 +25,7 @@ public class Storage {
     private static Storage instance;
 
     public Storage() {
+        super();
         this.passengers = new ArrayList<>();
         this.planes = new ArrayList<>();
         this.locations = new ArrayList<>();
