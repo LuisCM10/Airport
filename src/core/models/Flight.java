@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Flight implements Cloneable{
+public class Flight {
 
     private final String id ;
     private final Plane plane;

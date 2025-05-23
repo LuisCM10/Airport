@@ -53,8 +53,6 @@ public class Location implements Cloneable {
     public double getAirportLongitude() {
         return airportLongitude;
     }
-     public AirportType getAirportType() {
-        return airportType;
-    }
+    
     
 }

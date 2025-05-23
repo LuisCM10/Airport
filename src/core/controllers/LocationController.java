@@ -37,8 +37,10 @@ public class LocationController {
             
             try {
                 airportLatitudeDouble = Double.parseDouble(airportLatitude);
-                if (airportLatitude.length() - (airportLatitude.indexOf(".") -1) > 4) {
-                    return new Response("Airport latitude must have at most 4 decimal places", Status.BAD_REQUEST);
+                if (airportLatitude.contains(".")) {
+                    if (airportLatitude.substring(airportLatitude.indexOf(".")+1, airportLatitude.length()).length() > 4) {
+                        return new Response("Airport latitude must have at most 4 decimal places", Status.BAD_REQUEST);
+                    }
                 }
                 if (airportLatitudeDouble < -90 || airportLatitudeDouble > 90) {
                     return new Response("Airport latitude must be a number between -90 and 90", Status.BAD_REQUEST);
@@ -48,8 +50,10 @@ public class LocationController {
             }
             try {
                 airportLongitudeDouble = Double.parseDouble(airportLongitude);
-                if (airportLongitude.length() - (airportLongitude.indexOf(".") -1) > 4) {
-                    return new Response("Airport longitude must have at most 4 decimal places", Status.BAD_REQUEST);
+                if (airportLongitude.contains(".")) {
+                    if (airportLongitude.substring(airportLongitude.indexOf(".")+1, airportLongitude.length()).length() > 4) {
+                        return new Response("Airport longitude must have at most 4 decimal places", Status.BAD_REQUEST);
+                    }
                 }
                 if (airportLongitudeDouble < -180 || airportLongitudeDouble > 180) {
                     return new Response("Airport longitude must be a number between -180 and 180", Status.BAD_REQUEST);

@@ -50,8 +50,7 @@ public class Main {
                 double latitude = loc.getDouble("airportLatitude");
                 double longitude = loc.getDouble("airportLongitude");
 
-                AirportType type = (airportCountry.equals("USA")) ? new NationalAirport() : new InternationalAirport();
-                Location location = new Location(airportId, airportName, airportCity, airportCountry, latitude, longitude, type);
+                Location location = new Location(airportId, airportName, airportCity, airportCountry, latitude, longitude);
                 locations.add(location);
             }
 
@@ -153,7 +152,7 @@ public class Main {
         // Interfaz gráfica (opcional)
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
-            new AirportFrame();
+            new AirportFrame().setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }

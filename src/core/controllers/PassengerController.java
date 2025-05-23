@@ -10,7 +10,6 @@ import core.models.Passenger;
 import core.models.storage.Storage;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.HashSet;
 
 /**
  *
@@ -110,12 +109,12 @@ public class PassengerController {
             try {
                 idLong = Long.parseLong(id);
                 if (idLong < 0) {
-                    return new Response("Id must be positive", Status.BAD_REQUEST);
+                    return new Response("Passanger id must be positive", Status.BAD_REQUEST);
                 } else if (id.length() > 15) {
-                    return new Response("Id must have a maximum of 15 digits", Status.BAD_REQUEST);
+                    return new Response("Passanger id must have a maximum of 15 digits", Status.BAD_REQUEST);
                 }
             } catch (NumberFormatException ex) {
-                return new Response("Id must be numeric", Status.BAD_REQUEST);
+                return new Response("Passanger id must be numeric", Status.BAD_REQUEST);
             }
             
             Storage storage = Storage.getInstance();

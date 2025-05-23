@@ -9,6 +9,7 @@ import core.models.Location;
 import core.models.Passenger;
 import core.models.Plane;
 import com.formdev.flatlaf.FlatDarkLaf;
+import core.controllers.FlightController;
 import core.controllers.LocationController;
 import core.controllers.PassengerController;
 import core.controllers.PlaneController;
@@ -1528,76 +1529,73 @@ public class AirportFrame extends javax.swing.JFrame {
         String departureLocationId = flightDeparLocation.getItemAt(flightDeparLocation.getSelectedIndex());
         String arrivalLocationId = flightArriLocation.getItemAt(flightArriLocation.getSelectedIndex());
         String scaleLocationId = flightScaLocation.getItemAt(flightScaLocation.getSelectedIndex());
-        int year = Integer.parseInt(flightDeparYear.getText());
-        int month = Integer.parseInt(flightDeparMonth.getItemAt(flightDeparMonth.getSelectedIndex()));
-        int day = Integer.parseInt(flightDeparDay.getItemAt(flightDeparDay.getSelectedIndex()));
-        int hour = Integer.parseInt(flightDeparHour.getItemAt(flightDeparHour.getSelectedIndex()));
-        int minutes = Integer.parseInt(flightDeparMinute.getItemAt(flightDeparMinute.getSelectedIndex()));
-        int hoursDurationsArrival = Integer.parseInt(flightDurArrHour.getItemAt(flightDurArrHour.getSelectedIndex()));
-        int minutesDurationsArrival = Integer.parseInt(flightDurArrMinute.getItemAt(flightDurArrMinute.getSelectedIndex()));
-        int hoursDurationsScale = Integer.parseInt(flightDurScaHour.getItemAt(flightDurScaHour.getSelectedIndex()));
-        int minutesDurationsScale = Integer.parseInt(flightDurScaMinute.getItemAt(flightDurScaMinute.getSelectedIndex()));
-
-        LocalDateTime departureDate = LocalDateTime.of(year, month, day, hour, minutes);
-
-        Plane plane = null;
-        for (Plane p : this.planes) {
-            if (planeId.equals(p.getId())) {
-                plane = p;
-            }
-        }
-
-        Location departure = null;
-        Location arrival = null;
-        Location scale = null;
-        for (Location location : this.locations) {
-            if (departureLocationId.equals(location.getAirportId())) {
-                departure = location;
-            }
-            if (arrivalLocationId.equals(location.getAirportId())) {
-                arrival = location;
-            }
-            if (scaleLocationId.equals(location.getAirportId())) {
-                scale = location;
-            }
-        }
-
-        if (scale == null) {
-            this.flights.add(new Flight(id, plane, departure, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival));
+        String year = flightDeparYear.getText();
+        String month = flightDeparMonth.getItemAt(flightDeparMonth.getSelectedIndex());
+        String day = flightDeparDay.getItemAt(flightDeparDay.getSelectedIndex());
+        String hour = flightDeparHour.getItemAt(flightDeparHour.getSelectedIndex());
+        String minutes = flightDeparMinute.getItemAt(flightDeparMinute.getSelectedIndex());
+        String hoursDurationsArrival = flightDurArrHour.getItemAt(flightDurArrHour.getSelectedIndex());
+        String minutesDurationsArrival = flightDurArrMinute.getItemAt(flightDurArrMinute.getSelectedIndex());
+        String hoursDurationsScale = flightDurScaHour.getItemAt(flightDurScaHour.getSelectedIndex());
+        String minutesDurationsScale = ""+ flightDurScaMinute.getItemAt(flightDurScaMinute.getSelectedIndex());
+        Response response = FlightController.createFlight(id,planeId,departureLocationId,arrivalLocationId, scaleLocationId, year, month, day, hour, minutes, hoursDurationsArrival, minutesDurationsArrival, hoursDurationsScale, minutesDurationsScale);
+        if (response.getStatus() >= 500) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+        } else if (response.getStatus() >= 400) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
         } else {
-            this.flights.add(new Flight(id, plane, departure, scale, arrival, departureDate, hoursDurationsArrival, minutesDurationsArrival, hoursDurationsScale, minutesDurationsScale));
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
+            flightId.setText("");
+            flightDeparYear.setText("");
+            flightPlane.setSelectedIndex(0);
+            flightDeparLocation.setSelectedIndex(0);
+            flightArriLocation.setSelectedIndex(0);
+            flightScaLocation.setSelectedIndex(0);
+            flightDeparMonth.setSelectedIndex(0);
+            flightDeparDay.setSelectedIndex(0);
+            flightDeparHour.setSelectedIndex(0);
+            flightDeparMinute.setSelectedIndex(0);
+            flightDurArrHour.setSelectedIndex(0);
+            flightDurArrMinute.setSelectedIndex(0);
+            flightDurScaHour.setSelectedIndex(0);
+            flightDurScaMinute.setSelectedIndex(0);                       
+            this.addFlight.addItem(id);
         }
+        
 
-        this.addFlight.addItem(id);
+        
     }//GEN-LAST:event_btnFlightCreateActionPerformed
 
     private void btnPassUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPassUpdateActionPerformed
         // TODO add your handling code here:
-        long id = Long.parseLong(passUpdId.getText());
-        String firstname = passUpdFirstName.getText();
-        String lastname = passUpdLastName.getText();
-        int year = Integer.parseInt(passUpdBirthYear.getText());
-        int month = Integer.parseInt(passBirthMonth.getItemAt(passUpdBirthMonth.getSelectedIndex()));
-        int day = Integer.parseInt(passBirthDay.getItemAt(passUpdBirthDay.getSelectedIndex()));
-        int phoneCode = Integer.parseInt(passUpdPrefix.getText());
-        long phone = Long.parseLong(passUpdTelefonic.getText());
-        String country = passUpdCountry.getText();
+        String id = passId.getText();
+        String firstname = passFirstName.getText();
+        String lastname = passLastName.getText();
+        String year = passBirthYear.getText();
+        String month = passBirthMonth.getItemAt(passBirthMonth.getSelectedIndex());
+        String day = passBirthDay.getItemAt(passBirthDay.getSelectedIndex());
+        String phoneCode = passPrefix.getText();
+        String phone = passNumTelefonic.getText();
+        String country = passCountry.getText();
 
-        LocalDate birthDate = LocalDate.of(year, month, day);
-
-        Passenger passenger = null;
-        for (Passenger p : this.passengers) {
-            if (p.getId() == id) {
-                passenger = p;
-            }
+        Response response = PassengerController.updatePassenger(id, firstname, lastname, year, month, day, phoneCode, phone, country);
+        if (response.getStatus() >= 500) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+        } else if (response.getStatus() >= 400) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
+            passId.setText("");
+            passFirstName.setText("");
+            passLastName.setText("");
+            passBirthYear.setText("");
+            passBirthMonth.setSelectedIndex(0);
+            passBirthDay.setSelectedIndex(0);
+            passPrefix.setText("");
+            passNumTelefonic.setText("");
+            passCountry.setText("");
         }
 
-        passenger.setFirstname(firstname);
-        passenger.setLastname(lastname);
-        passenger.setBirthDate(birthDate);
-        passenger.setCountryPhoneCode(phoneCode);
-        passenger.setPhone(phone);
-        passenger.setCountry(country);
     }//GEN-LAST:event_btnPassUpdateActionPerformed
 
     private void btnAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFlightActionPerformed

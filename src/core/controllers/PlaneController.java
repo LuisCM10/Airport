@@ -61,4 +61,32 @@ public class PlaneController {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    public static Response readPlane (String id) {
+        try {
+            if (id.length() != 7) {
+                return new Response("Plane Id must have a 7 characters, 2 initial capital letters and 7 digits after de capital letters", Status.BAD_REQUEST);
+            }
+            for (int i = 0; i < 2; i++) {
+                char c = id.charAt(i);
+                if (c < 65 || c > 90) { // Verificar si está en el rango de A-Z
+                    return new Response("Plane Id must have a 2 initial capital letters", Status.BAD_REQUEST); // No es una letra mayúscula
+                }
+            }
+            for (int i = 2; i < 7; i++) {
+                char c = id.charAt(i);
+                if (c < 48 || c > 57) { // Verificar si está en el rango de A-Z
+                    return new Response("Plane Id must have a 7 digits after the 2 capital letters", Status.BAD_REQUEST); // No es una letra mayúscula
+                }
+            }
+            Storage storage = Storage.getInstance();
+            Plane plane = storage.getPlane(id);
+            if (plane == null) {
+                return new Response("Plane not found", Status.NOT_FOUND);
+            }
+            return new Response("Plane found", Status.OK, plane);
+        }catch (Exception ex) {
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
