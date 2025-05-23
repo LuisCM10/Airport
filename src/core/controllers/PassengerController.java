@@ -6,7 +6,9 @@ package core.controllers;
 
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
+import core.models.Flight;
 import core.models.Passenger;
+import core.models.services.FlightService;
 import core.models.storage.Storage;
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -103,9 +105,7 @@ public class PassengerController {
     
     public static Response readPassenger(String id) {
         try {
-            long idLong, phoneLong;
-            int yearInt, monthInt, dayInt, phoneCodeInt;
-            LocalDate birthDate;
+            long idLong;
             try {
                 idLong = Long.parseLong(id);
                 if (idLong < 0) {
@@ -214,6 +214,43 @@ public class PassengerController {
             passenger.setPhone(phoneLong);
             passenger.setCountry(country);
             return new Response("Passanger update successfully", Status.OK);
+        } catch (Exception ex) {
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    public static Response addFlightPassenger (String passengerId, String flightId) {
+        try {
+            long idLong;
+            try {
+                idLong = Long.parseLong(passengerId);
+                if (idLong < 0) {
+                    return new Response("Passanger id must be positive", Status.BAD_REQUEST);
+                } else if (passengerId.length() > 15) {
+                    return new Response("Passanger id must have a maximum of 15 digits", Status.BAD_REQUEST);
+                }
+            } catch (NumberFormatException ex) {
+                return new Response("Passanger id must be numeric", Status.BAD_REQUEST);
+            }
+            
+            Storage storage = Storage.getInstance();
+            Passenger passenger = storage.getPassenger(idLong);
+            if (passenger == null) {
+                return new Response("Passenger not found", Status.NOT_FOUND);
+            }
+            Response response = FlightController.readFlight(flightId);
+            if (response.getStatus() >= 400) {
+                return response;
+            }
+            Flight flight = (Flight) response.getObject();
+            if (FlightService.getNumPassengers(flight) >= flight.getPlane().getMaxCapacity()) {
+                return new Response("Flight is already full", Status.BAD_REQUEST);
+            }
+            if (passenger.getFlights().contains(flight)) {
+                return new Response("Passenger already on flight", Status.BAD_REQUEST);
+            }
+            FlightService.addPassenger(flight, passenger);
+            return new Response("Passenger succesfully added to the flight", Status.OK);
         } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }

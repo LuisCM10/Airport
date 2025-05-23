@@ -1600,26 +1600,19 @@ public class AirportFrame extends javax.swing.JFrame {
 
     private void btnAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFlightActionPerformed
         // TODO add your handling code here:
-        long passengerId = Long.parseLong(addFlightId.getText());
+        String passengerId = addFlightId.getText();
         String flightId = addFlight.getItemAt(addFlight.getSelectedIndex());
 
-        Passenger passenger = null;
-        Flight flight = null;
-
-        for (Passenger p : this.passengers) {
-            if (p.getId() == passengerId) {
-                passenger = p;
-            }
+        Response response = PassengerController.addFlightPassenger(passengerId, flightId);
+        if (response.getStatus() >= 500) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+        } else if (response.getStatus() >= 400) {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
+            addFlightId.setText("");
+            addFlight.setSelectedIndex(0);
         }
-
-        for (Flight f : this.flights) {
-            if (flightId.equals(f.getId())) {
-                flight = f;
-            }
-        }
-
-        passenger.addFlight(flight);
-        flight.addPassenger(passenger);
     }//GEN-LAST:event_btnAddFlightActionPerformed
 
     private void btnFlightDelayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFlightDelayActionPerformed

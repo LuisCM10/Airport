@@ -143,10 +143,7 @@ public class FlightController {
                 }
                 hoursDurationScaleInt = 0;
                 minutesDurationScaleInt = 0;
-            }        
-                      
-            
-            
+            }                                     
             Storage storage = Storage.getInstance();
             boolean done;
             if (scale == null) {
