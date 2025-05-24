@@ -10,8 +10,12 @@ import core.models.Plane;
 import core.models.observers.Observable;
 import core.models.observers.Observer;
 import core.models.services.PlaneService;
+import core.controllers.utils.SortPlanes;
+import core.models.storage.PassengerStorage;
 import core.models.storage.PlaneStorage;
 import core.views.AirportFrame;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -93,13 +97,49 @@ public class PlaneController extends Observable implements Observer{
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    public static Response getPlanesToTable (DefaultTableModel model) {
+        try {            
+            PlaneStorage storage = PlaneStorage.getInstance();
+            ArrayList<Plane> planes = storage.getPlanes();
+            
+            if (planes.isEmpty()) {
+                return new Response("Planes is empty" , Status.NOT_FOUND);
+            }
+            try {
+                SortPlanes.sortPlanes(planes);
+            } catch (IllegalStateException e) {
+                return new Response("Sort error", Status.INTERNAL_SERVER_ERROR);
+            }
+            model.setRowCount(0);
+            for (Plane plane : planes) {
+                Object[] planeInfo = new Object[]{plane.getId(), plane.getBrand(), plane.getModel(), plane.getMaxCapacity(), plane.getAirline(), PlaneService.getNumFlights(plane)};
+                model.addRow(planeInfo);
+            }
+            return new Response("Planes table updated", Status.OK, model);            
+        }catch (Exception ex) {
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    public static Response getData () {
+        try {
+            PlaneStorage storage = PlaneStorage.getInstance();
+            if (!storage.getDataToJSON()) {
+                return new Response("No information to load", Status.NO_CONTENT);
+            }            
+            return new Response("Planes load succesfully", Status.OK);
+        } catch (Exception ex) {            
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     public PlaneController() {
         super(AirportFrame.getInstance());
     }
 
     @Override
-    public void update(Observable observable, Object arg, String type) {
+    public void update( Object arg, String type) {
        Plane plane = (Plane) arg;
        Object[] planeInfo = new Object[]{plane.getId(), plane.getBrand(), plane.getModel(), plane.getMaxCapacity(), plane.getAirline(), PlaneService.getNumFlights(plane)};
        notifyObserver(planeInfo, type);
@@ -107,6 +147,6 @@ public class PlaneController extends Observable implements Observer{
 
     @Override
     public void notifyObserver(Object object, String type) {
-        observer.update(this, object, type);
+        observer.update( object, type);
     }
 }

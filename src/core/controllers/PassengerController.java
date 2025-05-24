@@ -12,10 +12,14 @@ import core.models.observers.Observable;
 import core.models.observers.Observer;
 import core.models.services.FlightService;
 import core.models.services.PassengerService;
+import core.controllers.utils.SortFlights;
+import core.controllers.utils.SortPassengers;
 import core.models.storage.PassengerStorage;
 import core.views.AirportFrame;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -259,9 +263,67 @@ public class PassengerController extends Observable implements Observer {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
-
-    public static Response ObserverPassenger(Passenger passenger) {
-        return null;
+    public static Response getPassengerToTable (DefaultTableModel model) {
+        try {            
+            PassengerStorage storage = PassengerStorage.getInstance();
+            ArrayList<Passenger> passengers = storage.getPassengers();
+            
+            if (passengers.isEmpty()) {
+                return new Response("Passengers is empty" , Status.NOT_FOUND);
+            }
+            try {
+                SortPassengers.sortPassengers(passengers);
+            } catch (IllegalStateException e) {
+                return new Response("Sort error", Status.INTERNAL_SERVER_ERROR);
+            }
+            model.setRowCount(0);
+            for (Passenger passenger : passengers) {
+                Object[] passengerInfo = new Object[]{passenger.getId(), PassengerService.getFullName(passenger), passenger.getBirthDate(), PassengerService.calculateAge(passenger), PassengerService.generateFullPhone(passenger), passenger.getCountry(), PassengerService.getNumFlights(passenger)};
+                model.addRow(passengerInfo);
+            }
+            return new Response("Passangers table updated", Status.OK, model);            
+        }catch (Exception ex) {
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    public static Response getFlightsPassenger (String id, DefaultTableModel model) {
+        try {            
+            PassengerStorage storage = PassengerStorage.getInstance();
+            Passenger passenger = storage.get(id);         
+            if(passenger == null) {
+                return new Response("Passengers not found" , Status.NOT_FOUND);
+            }
+            ArrayList<Flight> flights = passenger.getFlights();            
+            if (flights.isEmpty()) {
+                return new Response("Passengers is empty" , Status.NOT_FOUND);
+            }
+            try {
+                SortFlights.sortFlights(flights);
+            } catch (IllegalStateException e) {
+                return new Response("Sort error", Status.INTERNAL_SERVER_ERROR);
+            }
+            model.setRowCount(0);
+            for (Flight flight : flights) {
+                Object [] flightInfo = new Object[]{flight.getId(), flight.getDepartureLocation().getAirportId(), flight.getArrivalLocation().getAirportId(), (flight.getScaleLocation() == null ? "-" : flight.getScaleLocation().getAirportId()), flight.getDepartureDate(), FlightService.calculateArrivalDate(flight), flight.getPlane().getId(), FlightService.getNumPassengers(flight)};
+                model.addRow(flightInfo);
+            }
+            return new Response("Passanger flights table updated", Status.OK, model);            
+        }catch (Exception ex) {
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    public static Response getData () {
+        try {
+            PassengerStorage storage = PassengerStorage.getInstance();
+            if (!storage.getDataToJSON()) {
+                return new Response("No information to load", Status.NO_CONTENT);
+            }
+            return new Response("Passengers load succesfully", Status.OK);
+        } catch (Exception ex) {            
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public PassengerController() {
@@ -269,7 +331,7 @@ public class PassengerController extends Observable implements Observer {
     }
 
     @Override
-    public void update(Observable observable, Object arg, String type) {
+    public void update(Object arg, String type) {
         Passenger passenger = (Passenger) arg;
         Object[] passengerInfo = new Object[]{passenger.getId(), PassengerService.getFullName(passenger), passenger.getBirthDate(), PassengerService.calculateAge(passenger), PassengerService.generateFullPhone(passenger), passenger.getCountry(), PassengerService.getNumFlights(passenger)};
         notifyObserver(passengerInfo, type);
@@ -277,6 +339,6 @@ public class PassengerController extends Observable implements Observer {
 
     @Override
     public void notifyObserver(Object object, String type) {
-        observer.update(this, object, type);
+        observer.update( object, type);
     }
 }

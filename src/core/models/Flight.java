@@ -4,12 +4,13 @@
  */
 package core.models;
 
-import core.models.types.FlightType;
+import core.controllers.FlightController;
+import core.models.observers.Observable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Flight {
+public class Flight extends Observable {
 
     private final String id;
     private final Plane plane;
@@ -22,23 +23,12 @@ public class Flight {
     private final int hoursDurationScale;
     private final int minutesDurationScale;
     private final List<Passenger> passengers;
-    private String code;
-    private LocalDateTime departureTime;
-    private LocalDateTime arrivalTime;
-    private FlightType flightType;
-    private double basePrice;
-
-    // Constructor para vuelo sin escala
-    public Flight(String id, Plane plane, Location departureLocation, Location arrivalLocation,
-            LocalDateTime departureDate, int hoursDurationArrival, int minutesDurationArrival) {
-        this(id, plane, departureLocation, null, arrivalLocation, departureDate, hoursDurationArrival, minutesDurationArrival, 0, 0);
-
-    }
 
     // Constructor para vuelo con escala
     public Flight(String id, Plane plane, Location departureLocation, Location scaleLocation, Location arrivalLocation,
             LocalDateTime departureDate, int hoursDurationArrival, int minutesDurationArrival,
             int hoursDurationScale, int minutesDurationScale) {
+        super(new FlightController());
         this.id = id;
         this.passengers = new ArrayList<>();
         this.plane = plane;
@@ -50,28 +40,8 @@ public class Flight {
         this.minutesDurationArrival = minutesDurationArrival;
         this.hoursDurationScale = hoursDurationScale;
         this.minutesDurationScale = minutesDurationScale;
-    }
-
-    public Flight(String id, Plane plane, Location departureLocation, Location scaleLocation,
-            Location arrivalLocation, LocalDateTime departureTime, LocalDateTime arrivalTime,
-            int hoursDurationArrival, int minutesDurationArrival,
-            int hoursDurationScale, int minutesDurationScale,
-            FlightType flightType, double basePrice) {
-
-        this.id = id;
-        this.plane = plane;
-        this.departureLocation = departureLocation;
-        this.scaleLocation = scaleLocation;
-        this.arrivalLocation = arrivalLocation;
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
-        this.hoursDurationArrival = hoursDurationArrival;
-        this.minutesDurationArrival = minutesDurationArrival;
-        this.hoursDurationScale = hoursDurationScale;
-        this.minutesDurationScale = minutesDurationScale;
-        this.flightType = flightType;
-        this.basePrice = basePrice;
-        this.passengers = new ArrayList<>();
+        this.plane.addFlight(this);
+        notifyObserver( this, "FlightInfo");
     }
 
     // Getters necesarios
@@ -102,9 +72,15 @@ public class Flight {
     public List<Passenger> getPassengers() {
         return passengers;
     }
+    
+    public void addPassenger(Passenger passenger) {
+        this.passengers.add(passenger);
+        notifyObserver(this, "FlightUpload");
+    }
 
     public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
+        notifyObserver(this, "FlightUpload");
     }
 
     public int getHoursDurationScale() {
@@ -123,12 +99,9 @@ public class Flight {
         return minutesDurationArrival;
     }
 
-    public double getFinalFare() {
-        return flightType.calculateFare(basePrice);
-    }
-
-    public String getFlightTypeName() {
-        return flightType.getTypeName();
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update( object, type);
     }
 
 }

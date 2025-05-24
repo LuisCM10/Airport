@@ -4,13 +4,14 @@
  */
 package core.models;
 
-import core.models.types.AirportType;
+import core.controllers.LocationController;
+import core.models.observers.Observable;
 
 /**
  *
  * @author edangulo
  */
-public class Location implements Cloneable {
+public class Location extends Observable implements Cloneable {
     
     private final String airportId;
     private String airportName;
@@ -22,12 +23,13 @@ public class Location implements Cloneable {
     
     public Location(String airportId, String airportName, String airportCity, String airportCountry,
                     double airportLatitude, double airportLongitude) {
+        super(new LocationController());
         this.airportId = airportId;
         this.airportName = airportName;
         this.airportCity = airportCity;
         this.airportCountry = airportCountry;
         this.airportLatitude = airportLatitude;
-        this.airportLongitude = airportLongitude;
+        this.airportLongitude = airportLongitude;        
     }
 
     public String getAirportId() {
@@ -52,6 +54,11 @@ public class Location implements Cloneable {
 
     public double getAirportLongitude() {
         return airportLongitude;
+    }
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update( object, type);
     }
     
     

@@ -9,11 +9,12 @@ import core.models.Flight;
 import core.models.Passenger;
 import java.time.LocalDateTime;
 
-public class FlightService {
+public class FlightService{
 
     // Agrega un pasajero al vuelo
     public static void addPassenger(Flight flight, Passenger passenger) {
         flight.getPassengers().add(passenger);
+        passenger.addFlight(flight);
     }
 
     // Calcula la fecha y hora de llegada considerando escala y duración total
@@ -30,7 +31,7 @@ public class FlightService {
         LocalDateTime newDeparture = flight.getDepartureDate()
                 .plusHours(hours)
                 .plusMinutes(minutes);
-        flight.setDepartureDate(newDeparture);
+        flight.setDepartureDate(newDeparture);        
     }
 
     // Retorna el número total de pasajeros del vuelo

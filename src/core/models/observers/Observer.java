@@ -10,6 +10,6 @@ package core.models.observers;
  */
 public interface Observer  {
 
-    public abstract void update(Observable observable, Object arg, String type);   
+    public abstract void update(Object arg, String type);   
     
 }
