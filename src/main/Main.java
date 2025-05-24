@@ -7,16 +7,14 @@ package main;
 import core.models.services.PassengerFlightManager;
 import core.models.services.PassengerService;
 import core.models.services.PlaneService;
-import core.models.services.PlaneFlightManager;
 import core.models.services.FlightService;
 import core.models.services.FlightManager;
-import core.models.services.PlaneFlightManagerImpl;
+import core.models.services.PlaneFlightManager;
 import com.formdev.flatlaf.FlatDarkLaf;
 import core.views.AirportFrame;
 import javax.swing.UIManager;
 
 import core.models.*;
-import core.models.types.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,7 +28,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         // Inicializar servicios
-        PlaneFlightManager flightManager = new PlaneFlightManagerImpl();
+        PlaneFlightManager flightManager = new PlaneFlightManager();
         PlaneService planeService = new PlaneService(flightManager);
         FlightManager passengerFlightManager = new PassengerFlightManager();
         PassengerService passengerService = new PassengerService(passengerFlightManager);
@@ -152,7 +150,7 @@ public class Main {
         // Interfaz gráfica (opcional)
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
-            new AirportFrame().setVisible(true);
+            AirportFrame.getInstance().setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
         }

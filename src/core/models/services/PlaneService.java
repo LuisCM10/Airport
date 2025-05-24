@@ -25,4 +25,8 @@ public class PlaneService {
     public boolean isFlightAssignable(Plane plane) {
         return flightManager.canAddFlight(plane);
     }
+    
+    public static int getNumFlights(Plane plane) {
+        return PlaneFlightManager.getFlights(plane).size();
+    }
 }

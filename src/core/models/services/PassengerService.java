@@ -20,22 +20,22 @@ public class PassengerService {
         flightManager.addFlight(passenger, flight);
     }
 
-    public String getFullName(Passenger passenger) {
+    public static String getFullName(Passenger passenger) {
         return passenger.getFirstname() + " " + passenger.getLastname();
     }
 
-    public String generateFullPhone(Passenger passenger) {
+    public static String generateFullPhone(Passenger passenger) {
         return "+" + passenger.getCountryPhoneCode() + " " + passenger.getPhone();
     }
 
-    public int calculateAge(Passenger passenger) {
+    public static int calculateAge(Passenger passenger) {
         LocalDate birthDate = passenger.getBirthDate();
         if (birthDate == null) return 0;
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
-    public int getNumFlights(Passenger passenger) {
-        return flightManager.getFlights(passenger).size();
+    public static int getNumFlights(Passenger passenger) {
+        return passenger.getFlights().size();
     }
 }
 

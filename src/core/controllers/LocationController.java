@@ -7,13 +7,16 @@ package core.controllers;
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.models.Location;
-import core.models.storage.Storage;
+import core.models.observers.Observable;
+import core.models.observers.Observer;
+import core.models.storage.LocationStorage;
+import core.views.AirportFrame;
 
 /**
  *
  * @author ASUS
  */
-public class LocationController {
+public class LocationController extends Observable implements Observer{
     public static Response createLocation (String airportId, String airportName, String airportCity, String airportCountry, String airportLatitude, String airportLongitude) {
         try {
             double airportLatitudeDouble, airportLongitudeDouble;
@@ -61,8 +64,8 @@ public class LocationController {
             } catch (NumberFormatException ex) {
                 return new Response("Airport longitude must be numeric", Status.BAD_REQUEST);
             }
-            Storage storage = Storage.getInstance();
-            if (!storage.addLocation(new Location(airportId, airportName, airportCity, airportCountry, airportLatitudeDouble, airportLongitudeDouble))){
+            LocationStorage storage = LocationStorage.getInstance();
+            if (!storage.add(new Location(airportId, airportName, airportCity, airportCountry, airportLatitudeDouble, airportLongitudeDouble))){
                 return new Response("A location with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Location create succesfully", Status.CREATED);
@@ -81,8 +84,8 @@ public class LocationController {
                     return new Response("Airport id must have a 3 capital letters", Status.BAD_REQUEST); // No es una letra mayúscula
                 }
             }
-            Storage storage = Storage.getInstance();            
-            Location location = storage.getLocation(id);
+            LocationStorage storage = LocationStorage.getInstance();         
+            Location location = storage.get(id);
             if (location == null) {
                 return new Response("Location not found", Status.NOT_FOUND);
             }
@@ -90,5 +93,21 @@ public class LocationController {
         } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public LocationController() {
+        super(AirportFrame.getInstance());
+    }
+
+    @Override
+    public void update(Observable observable, Object arg, String type) {
+        Location location = (Location) arg;
+        Object[] locationInfo = new Object[]{location.getAirportId(), location.getAirportName(), location.getAirportCity(), location.getAirportCountry()};
+       notifyObserver(locationInfo, type);
+    }
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update(this, object, type);
     }
 }

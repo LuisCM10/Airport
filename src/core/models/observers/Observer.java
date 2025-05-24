@@ -8,18 +8,8 @@ package core.models.observers;
  *
  * @author ASUS
  */
-public abstract class Observer {
-    protected Observable observable;
+public interface Observer  {
 
-    public Observer() {
-        this.observable = null;
-    }
-    
-    public abstract void notify(Object object, String message);
-    
-    public void setObservable(Observable observable) {
-        this.observable = observable;
-    }
-    
+    public abstract void update(Observable observable, Object arg, String type);   
     
 }

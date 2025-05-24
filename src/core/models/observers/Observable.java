@@ -4,30 +4,17 @@
  */
 package core.models.observers;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author ASUS
  */
 public abstract class Observable {
-    protected ArrayList<Observer> observers;
+    protected Observer observer;
     
-    public Observable() {
-        this.observers = new ArrayList<>();
+    public Observable(Observer observer) {
+        this.observer =  observer;
     }
+        
+    public abstract void notifyObserver(Object object, String type);
     
-    public boolean addObserver(Observer observer) {
-        this.observers.add(observer);
-        observer.setObservable(this);
-        System.out.println(observer + " is observing " + this);
-        return true;
-    }
-    
-    public void notifyAll(Object object, String type) {
-        switch (type) {
-            case "Passenger":
-                
-        }
-    }
 }

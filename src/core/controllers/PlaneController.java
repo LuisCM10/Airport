@@ -7,13 +7,17 @@ package core.controllers;
 import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.models.Plane;
-import core.models.storage.Storage;
+import core.models.observers.Observable;
+import core.models.observers.Observer;
+import core.models.services.PlaneService;
+import core.models.storage.PlaneStorage;
+import core.views.AirportFrame;
 
 /**
  *
  * @author ASUS
  */
-public class PlaneController {
+public class PlaneController extends Observable implements Observer{
   
       
     public static Response createPlane(String id, String brand, String model, String maxCapacity, String airline) {
@@ -52,8 +56,8 @@ public class PlaneController {
             if (airline.equals("")) {
                 return new Response("Brand must be not empty", Status.BAD_REQUEST);
             }
-            Storage storage = Storage.getInstance();
-            if(!storage.addPlane(new Plane(id, brand, model, maxCapacityInt, airline))){                
+            PlaneStorage storage = PlaneStorage.getInstance();
+            if(!storage.add(new Plane(id, brand, model, maxCapacityInt, airline))){                
                 return new Response("A plane with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Plane created successfully", Status.CREATED);
@@ -79,8 +83,8 @@ public class PlaneController {
                     return new Response("Plane Id must have a 7 digits after the 2 capital letters", Status.BAD_REQUEST); // No es una letra mayúscula
                 }
             }
-            Storage storage = Storage.getInstance();
-            Plane plane = storage.getPlane(id);
+            PlaneStorage storage = PlaneStorage.getInstance();
+            Plane plane = storage.get(id);
             if (plane == null) {
                 return new Response("Plane not found", Status.NOT_FOUND);
             }
@@ -88,5 +92,21 @@ public class PlaneController {
         }catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public PlaneController() {
+        super(AirportFrame.getInstance());
+    }
+
+    @Override
+    public void update(Observable observable, Object arg, String type) {
+       Plane plane = (Plane) arg;
+       Object[] planeInfo = new Object[]{plane.getId(), plane.getBrand(), plane.getModel(), plane.getMaxCapacity(), plane.getAirline(), PlaneService.getNumFlights(plane)};
+       notifyObserver(planeInfo, type);
+    }
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update(this, object, type);
     }
 }

@@ -9,8 +9,11 @@ import core.controllers.utils.Status;
 import core.models.Flight;
 import core.models.Location;
 import core.models.Plane;
+import core.models.observers.Observable;
+import core.models.observers.Observer;
 import core.models.services.FlightService;
-import core.models.storage.Storage;
+import core.models.storage.FlightStorage;
+import core.views.AirportFrame;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 
@@ -18,7 +21,7 @@ import java.time.LocalDateTime;
  *
  * @author ASUS
  */
-public class FlightController {
+public class FlightController extends Observable implements Observer{
 
     public static Response createFlight (String id, String planeId, String departureLocationId, String arrivalLocationId, String scaleLocationId, String year, String month, String day, String hour, String minutes, String hourDurationArrival, String minutesDurationArrival, String hoursDurationScale, String minutesDurationScale) {
         try {
@@ -144,12 +147,12 @@ public class FlightController {
                 hoursDurationScaleInt = 0;
                 minutesDurationScaleInt = 0;
             }                                     
-            Storage storage = Storage.getInstance();
+            FlightStorage storage = FlightStorage.getInstance();
             boolean done;
             if (scale == null) {
-                done = storage.addFlight(new Flight(id, plane, departure, arrival, departureDate, hourDurationArrivalInt, minutesDurationArrivalInt));
+                done = storage.add(new Flight(id, plane, departure, arrival, departureDate, hourDurationArrivalInt, minutesDurationArrivalInt));
             } else {
-                done = storage.addFlight(new Flight(id, plane, departure, scale, arrival, departureDate, hourDurationArrivalInt, minutesDurationArrivalInt, hoursDurationScaleInt, minutesDurationScaleInt));
+                done = storage.add(new Flight(id, plane, departure, scale, arrival, departureDate, hourDurationArrivalInt, minutesDurationArrivalInt, hoursDurationScaleInt, minutesDurationScaleInt));
             }
             if (!done){
                 return new Response("A flight with that id already exists", Status.BAD_REQUEST);
@@ -176,8 +179,8 @@ public class FlightController {
                     return new Response("Id must have a 3 digits after the 3 capital letters", Status.BAD_REQUEST); // No es una letra mayúscula
                 }
             }            
-            Storage storage = Storage.getInstance();            
-            Flight flight = storage.getFlight(id);
+            FlightStorage storage = FlightStorage.getInstance();            
+            Flight flight = storage.get(id);
             if (flight == null) {
                 return new Response("Flight not found", Status.NOT_FOUND);
             }
@@ -205,8 +208,8 @@ public class FlightController {
                     return new Response("Id must have a 3 digits after the 3 capital letters", Status.BAD_REQUEST); // No es una letra mayúscula
                 }
             }            
-            Storage storage = Storage.getInstance();            
-            Flight flight = storage.getFlight(id);
+            FlightStorage storage = FlightStorage.getInstance();            
+            Flight flight = storage.get(id);
             if (flight == null) {
                 return new Response("Flight not found", Status.NOT_FOUND);
             }
@@ -231,5 +234,21 @@ public class FlightController {
         }catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public FlightController() {
+        super(AirportFrame.getInstance());
+    }
+
+    @Override
+    public void update(Observable observable, Object arg, String type) {
+        Flight flight = (Flight) arg;
+        Object [] flightInfo = new Object[]{flight.getId(), flight.getDepartureLocation().getAirportId(), flight.getArrivalLocation().getAirportId(), (flight.getScaleLocation() == null ? "-" : flight.getScaleLocation().getAirportId()), flight.getDepartureDate(), FlightService.calculateArrivalDate(flight), flight.getPlane().getId(), FlightService.getNumPassengers(flight)};
+        notifyObserver(flightInfo, type);
+    }
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update(this, object, type);
     }
 }

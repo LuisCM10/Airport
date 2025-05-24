@@ -14,11 +14,15 @@ import core.controllers.LocationController;
 import core.controllers.PassengerController;
 import core.controllers.PlaneController;
 import core.controllers.utils.Response;
+import core.models.observers.Observable;
+import core.models.observers.Observer;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,16 +30,17 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author edangulo
  */
-public class AirportFrame extends javax.swing.JFrame {
+public class AirportFrame extends javax.swing.JFrame implements Observer{
 
     /**
      * Creates new form AirportFrame
      */
     private int x, y;
+    private static AirportFrame instance;
 
     public AirportFrame() {
         initComponents();
-
+        
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
 
@@ -45,6 +50,15 @@ public class AirportFrame extends javax.swing.JFrame {
         this.generateMinutes();
         this.blockPanels();
     }
+
+    public static AirportFrame getInstance() {
+        if (instance == null) {
+            instance = new AirportFrame();
+        }
+        return instance;
+    }
+    
+    
 
     private void blockPanels() {
         //9, 11
@@ -214,7 +228,7 @@ public class AirportFrame extends javax.swing.JFrame {
         btnRefreshPassFlights = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        passInfoTable = new javax.swing.JTable();
         btnRefreshPass = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -241,19 +255,7 @@ public class AirportFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
 
-        panelRound1.setRadius(40);
         panelRound1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        panelRound2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                panelRound2MouseDragged(evt);
-            }
-        });
-        panelRound2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                panelRound2MousePressed(evt);
-            }
-        });
 
         jButton13.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jButton13.setText("X");
@@ -1057,8 +1059,8 @@ public class AirportFrame extends javax.swing.JFrame {
 
         passTable.addTab("Show my flights", jPanel7);
 
-        jTable2.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        passInfoTable.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        passInfoTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -1081,7 +1083,7 @@ public class AirportFrame extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(passInfoTable);
 
         btnRefreshPass.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         btnRefreshPass.setText("Refresh");
@@ -1655,7 +1657,7 @@ public class AirportFrame extends javax.swing.JFrame {
 
     private void btnRefreshPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPassActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        DefaultTableModel model = (DefaultTableModel) passInfoTable.getModel();
         model.setRowCount(0);
         for (Passenger passenger : this.passengers) {
             model.addRow(new Object[]{passenger.getId(), passenger.getFullname(), passenger.getBirthDate(), passenger.calculateAge(), passenger.generateFullPhone(), passenger.getCountry(), passenger.getNumFlights()});
@@ -1711,9 +1713,9 @@ public class AirportFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_passBirthMonthActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> addFlight;
@@ -1825,7 +1827,6 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField11;
     private javax.swing.JTextField jTextField9;
     private javax.swing.JTable locationsTable;
@@ -1838,6 +1839,7 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JTextField passCountry;
     private javax.swing.JTextField passFirstName;
     private javax.swing.JTextField passId;
+    private javax.swing.JTable passInfoTable;
     private javax.swing.JTextField passLastName;
     private javax.swing.JTextField passNumTelefonic;
     private javax.swing.JTextField passPrefix;
@@ -1856,4 +1858,26 @@ public class AirportFrame extends javax.swing.JFrame {
     private javax.swing.JRadioButton user;
     private javax.swing.JComboBox<String> userSelect;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Observable observable, Object arg, String type) {
+        DefaultTableModel model = null;
+        switch (type) {
+            case "PassInfo":
+                model = (DefaultTableModel) passInfoTable.getModel();
+                break;
+            case "FlightInfo":  
+                model = (DefaultTableModel) flightsTable.getModel();                
+                break;
+            case "PlaneInfo":
+                model = (DefaultTableModel) planesTable.getModel();
+                break;
+            case "LocationInfo":
+                model = (DefaultTableModel) locationsTable.getModel();
+                break;
+            default:
+                model = (DefaultTableModel) passflightsTable.getModel();
+        }
+        model.addRow((Object[]) arg);
+    }
 }

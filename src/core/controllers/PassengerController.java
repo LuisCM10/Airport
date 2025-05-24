@@ -8,8 +8,12 @@ import core.controllers.utils.Response;
 import core.controllers.utils.Status;
 import core.models.Flight;
 import core.models.Passenger;
+import core.models.observers.Observable;
+import core.models.observers.Observer;
 import core.models.services.FlightService;
-import core.models.storage.Storage;
+import core.models.services.PassengerService;
+import core.models.storage.PassengerStorage;
+import core.views.AirportFrame;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
@@ -17,10 +21,10 @@ import java.time.LocalDate;
  *
  * @author ASUS
  */
-public class PassengerController {
+public class PassengerController extends Observable implements Observer {
 
     public static Response createPassenger(String id, String firstname, String lastname, String year, String month, String day, String phoneCode, String phone, String country) {
-        
+
         try {
             long idLong, phoneLong;
             int yearInt, monthInt, dayInt, phoneCodeInt;
@@ -38,7 +42,7 @@ public class PassengerController {
             if (firstname.equals("")) {
                 return new Response("Firstname must be not empty", Status.BAD_REQUEST);
             }
-            
+
             if (lastname.equals("")) {
                 return new Response("Lastname must be not empty", Status.BAD_REQUEST);
             }
@@ -46,7 +50,7 @@ public class PassengerController {
                 yearInt = Integer.parseInt(year);
                 if (yearInt < 0) {
                     return new Response("Year must be positive", Status.BAD_REQUEST);
-                }                
+                }
                 if (year.length() > 4) {
                     return new Response("Year must have a maximun of 4 digits", Status.BAD_REQUEST);
                 }
@@ -64,15 +68,15 @@ public class PassengerController {
                 return new Response("Day must be selected", Status.BAD_REQUEST);
             }
             try {
-                birthDate = LocalDate.of(yearInt, monthInt, dayInt);                
+                birthDate = LocalDate.of(yearInt, monthInt, dayInt);
             } catch (DateTimeException ex) {
-                return new Response("Birthdate must be valid", Status.BAD_REQUEST);                
+                return new Response("Birthdate must be valid", Status.BAD_REQUEST);
             }
             try {
                 phoneCodeInt = Integer.parseInt(phoneCode);
                 if (phoneCodeInt < 0) {
                     return new Response("Phone code must be positive", Status.BAD_REQUEST);
-                }                
+                }
                 if (phoneCode.length() > 3) {
                     return new Response("Phone code must have a maximun of 3 digits", Status.BAD_REQUEST);
                 }
@@ -92,8 +96,8 @@ public class PassengerController {
             if (country.equals("")) {
                 return new Response("Country must be not empty", Status.BAD_REQUEST);
             }
-            Storage storage = Storage.getInstance();
-            if(!storage.addPassenger(new Passenger(idLong, firstname, lastname, birthDate, phoneCodeInt, phoneLong, country))) {
+            PassengerStorage storage = PassengerStorage.getInstance();
+            if (!storage.add(new Passenger(idLong, firstname, lastname, birthDate, phoneCodeInt, phoneLong, country))) {
                 return new Response("A passenger with that id already exists", Status.BAD_REQUEST);
             }
             return new Response("Passanger created successfully", Status.CREATED);
@@ -101,8 +105,7 @@ public class PassengerController {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    
+
     public static Response readPassenger(String id) {
         try {
             long idLong;
@@ -116,9 +119,9 @@ public class PassengerController {
             } catch (NumberFormatException ex) {
                 return new Response("Passanger id must be numeric", Status.BAD_REQUEST);
             }
-            
-            Storage storage = Storage.getInstance();
-            Passenger passenger = storage.getPassenger(idLong);
+
+            PassengerStorage storage = PassengerStorage.getInstance();
+            Passenger passenger = storage.get(idLong);
             if (passenger == null) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
             }
@@ -127,8 +130,9 @@ public class PassengerController {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
+
     public static Response updatePassenger(String id, String firstname, String lastname, String year, String month, String day, String phoneCode, String phone, String country) {
-        
+
         try {
             long idLong, phoneLong;
             int yearInt, monthInt, dayInt, phoneCodeInt;
@@ -143,17 +147,17 @@ public class PassengerController {
             } catch (NumberFormatException ex) {
                 return new Response("Id must be numeric", Status.BAD_REQUEST);
             }
-            
-            Storage storage = Storage.getInstance();
-            Passenger passenger = storage.getPassenger(idLong);
+
+            PassengerStorage storage = PassengerStorage.getInstance();
+            Passenger passenger = storage.get(idLong);
             if (passenger == null) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
             }
-            
+
             if (firstname.equals("")) {
                 return new Response("Firstname must be not empty", Status.BAD_REQUEST);
             }
-            
+
             if (lastname.equals("")) {
                 return new Response("Lastname must be not empty", Status.BAD_REQUEST);
             }
@@ -161,7 +165,7 @@ public class PassengerController {
                 yearInt = Integer.parseInt(year);
                 if (yearInt < 0) {
                     return new Response("Year must be positive", Status.BAD_REQUEST);
-                }                
+                }
                 if (year.length() > 4) {
                     return new Response("Year must have a maximun of 4 digits", Status.BAD_REQUEST);
                 }
@@ -179,15 +183,15 @@ public class PassengerController {
                 return new Response("Day must be selected", Status.BAD_REQUEST);
             }
             try {
-                birthDate = LocalDate.of(yearInt, monthInt, dayInt);                
+                birthDate = LocalDate.of(yearInt, monthInt, dayInt);
             } catch (DateTimeException ex) {
-                return new Response("Birthdate must be valid", Status.BAD_REQUEST);                
+                return new Response("Birthdate must be valid", Status.BAD_REQUEST);
             }
             try {
                 phoneCodeInt = Integer.parseInt(phoneCode);
                 if (phoneCodeInt < 0) {
                     return new Response("Phone code must be positive", Status.BAD_REQUEST);
-                }                
+                }
                 if (phoneCode.length() > 3) {
                     return new Response("Phone code must have a maximun of 3 digits", Status.BAD_REQUEST);
                 }
@@ -218,8 +222,8 @@ public class PassengerController {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    public static Response addFlightPassenger (String passengerId, String flightId) {
+
+    public static Response addFlightPassenger(String passengerId, String flightId) {
         try {
             long idLong;
             try {
@@ -232,9 +236,9 @@ public class PassengerController {
             } catch (NumberFormatException ex) {
                 return new Response("Passanger id must be numeric", Status.BAD_REQUEST);
             }
-            
-            Storage storage = Storage.getInstance();
-            Passenger passenger = storage.getPassenger(idLong);
+
+            PassengerStorage storage = PassengerStorage.getInstance();
+            Passenger passenger = storage.get(idLong);
             if (passenger == null) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
             }
@@ -255,5 +259,24 @@ public class PassengerController {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
+    public static Response ObserverPassenger(Passenger passenger) {
+        return null;
+    }
+
+    public PassengerController() {
+        super(AirportFrame.getInstance());
+    }
+
+    @Override
+    public void update(Observable observable, Object arg, String type) {
+        Passenger passenger = (Passenger) arg;
+        Object[] passengerInfo = new Object[]{passenger.getId(), PassengerService.getFullName(passenger), passenger.getBirthDate(), PassengerService.calculateAge(passenger), PassengerService.generateFullPhone(passenger), passenger.getCountry(), PassengerService.getNumFlights(passenger)};
+        notifyObserver(passengerInfo, type);
+    }
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update(this, object, type);
+    }
 }
