@@ -5,7 +5,6 @@
 package core.models;
 
 import core.controllers.PassengerController;
-import core.models.Flight;
 import core.models.observers.Observable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -67,14 +66,14 @@ public class Passenger extends Observable implements Cloneable {
     }
     public void addFlight (Flight flight) {
         this.flights.add(flight);
-flight.addPassenger(this);
-        notifyObserver(this, "PassAddFlight");
+        flight.addPassenger(this);
+        notifyObserver(null, "PassAddFlight");
     }
 
     // Setters si vas a modificar datos
     public void setFirstname(String firstname) {
         this.firstname = firstname;
-        notifyObserver(this, "PassUpload");
+        notifyObserver(null, "PassUpload");
     }
 
     public void setLastname(String lastname) {

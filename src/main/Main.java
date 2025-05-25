@@ -9,9 +9,8 @@ import core.controllers.DataController;
 import core.views.AirportFrame;
 import javax.swing.UIManager;
 
-
 public class Main {
-    
+
     public static void main(String args[]) {
         System.setProperty("flatlaf.useNativeLibrary", "false");
 
@@ -20,20 +19,19 @@ public class Main {
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }
-        DataController.loadData();
-        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AirportFrame().setVisible(true);                
-            }            
+                new AirportFrame().setVisible(true);
+                try {
+                    Thread.sleep(2000);
+                    DataController.loadData();
+                } catch (InterruptedException ex) {
+                    DataController.loadData();
+                }
+            }
         });
-        
-        
+
     }
 }
-
-
-
-
-

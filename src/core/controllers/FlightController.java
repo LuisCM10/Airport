@@ -281,13 +281,12 @@ public class FlightController extends Observable implements Observer{
                 notifyObserver(flightInfo, type);
                 break;
             case "FlightUpload":
-                notifyObserver(null, type);
+                notifyObserver(this, type);
         }
     }
 
     @Override
     public void notifyObserver(Object object, String type) {
-        System.out.println("Se realiza la notificacion");
         observer.update( object, type);      
     } 
     

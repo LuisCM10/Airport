@@ -6,16 +6,9 @@
     package core.models.services;
 
 import core.models.Flight;
-import core.models.Passenger;
 import java.time.LocalDateTime;
 
 public class FlightService{
-
-    // Agrega un pasajero al vuelo
-    public static void addPassenger(Flight flight, Passenger passenger) {
-        flight.getPassengers().add(passenger);
-        passenger.addFlight(flight);
-    }
 
     // Calcula la fecha y hora de llegada considerando escala y duración total
     public static LocalDateTime calculateArrivalDate(Flight flight) {

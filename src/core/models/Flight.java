@@ -75,12 +75,12 @@ public class Flight extends Observable implements Cloneable {
     
     public void addPassenger(Passenger passenger) {
         this.passengers.add(passenger);
-        notifyObserver(this, "FlightUpload");
+        notifyObserver(null, "FlightUpload");
     }
 
     public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
-        notifyObserver(this, "FlightUpload");
+        notifyObserver(null, "FlightUpload");
     }
 
     public int getHoursDurationScale() {

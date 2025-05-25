@@ -37,7 +37,7 @@ public class Plane extends Observable implements Cloneable{
     public ArrayList<Flight> getFlights() { return flights; }
     public void addFlight (Flight flight){
         this.flights.add(flight);
-        notifyObserver( this, "PlaneUpload");
+        notifyObserver( null, "PlaneUpload");
     }
     // Setters si quieres cambiar algo
     public void setBrand(String brand) { this.brand = brand; }

@@ -95,10 +95,9 @@ public class FlightStorage extends Observable implements Storage, uploadData {
                 Location departure = LocationStorage.getInstance().get(departureId);
                 String arrivalId = f.getString("arrivalLocation");
                 Location arrival = LocationStorage.getInstance().get(arrivalId);
-                String scaleId = "Location";
                 Location scale = null;
                 if (!f.isNull("scaleLocation")) {
-                    scaleId = f.getString("scaleLocation");
+                    String scaleId = f.getString("scaleLocation");
                     scale = LocationStorage.getInstance().get(scaleId);
                 }
                 LocalDateTime departureDate = LocalDateTime.parse(f.getString("departureDate"));

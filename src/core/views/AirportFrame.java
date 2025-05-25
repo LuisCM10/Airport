@@ -5,7 +5,6 @@
 package core.views;
 
 import core.controllers.FlightController;
-import core.controllers.DataController;
 import core.controllers.LocationController;
 import core.controllers.PassengerController;
 import core.controllers.PlaneController;
@@ -26,7 +25,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
      */
     private int x, y;
     private static AirportFrame instance;
-    private boolean done = false;
+
     public AirportFrame() {
         initComponents();
 
@@ -132,10 +131,10 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         jLabel11 = new javax.swing.JLabel();
         airplaneId = new javax.swing.JTextField();
         airplaneBrand = new javax.swing.JLabel();
-        jTextField9 = new javax.swing.JTextField();
+        createAirplaneBrand = new javax.swing.JTextField();
         airplaneModel = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        jTextField11 = new javax.swing.JTextField();
+        createAirplaneMaxCapacity = new javax.swing.JTextField();
         airplaneMaxCapacity = new javax.swing.JLabel();
         airplaneAirline = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
@@ -409,9 +408,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         jPanel3.add(airplaneBrand);
         airplaneBrand.setBounds(53, 157, 52, 25);
 
-        jTextField9.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        jPanel3.add(jTextField9);
-        jTextField9.setBounds(180, 154, 130, 31);
+        createAirplaneBrand.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        jPanel3.add(createAirplaneBrand);
+        createAirplaneBrand.setBounds(180, 154, 130, 31);
 
         airplaneModel.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         jPanel3.add(airplaneModel);
@@ -422,9 +421,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         jPanel3.add(jLabel13);
         jLabel13.setBounds(53, 216, 57, 25);
 
-        jTextField11.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
-        jPanel3.add(jTextField11);
-        jTextField11.setBounds(180, 273, 130, 31);
+        createAirplaneMaxCapacity.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
+        jPanel3.add(createAirplaneMaxCapacity);
+        createAirplaneMaxCapacity.setBounds(180, 273, 130, 31);
 
         airplaneMaxCapacity.setFont(new java.awt.Font("Yu Gothic UI", 0, 18)); // NOI18N
         airplaneMaxCapacity.setText("Max Capacity:");
@@ -1406,11 +1405,16 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             passTable.setEnabledAt(5, true);
             passTable.setEnabledAt(6, true);
         }
+        
+        this.update(null, "PassUpload");
+        this.update(null, "FlightUpload");
+        this.update(null, "PlaneUpload");
+        this.update(null, "LocationUpload");
         for (int i = 1; i < passTable.getTabCount(); i++) {
             passTable.setEnabledAt(i, true);
         }
         passTable.setEnabledAt(5, false);
-        passTable.setEnabledAt(6, false);
+        passTable.setEnabledAt(6, false); 
     }//GEN-LAST:event_administratorActionPerformed
 
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
@@ -1426,7 +1430,10 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             passTable.setEnabledAt(6, false);
             passTable.setEnabledAt(7, false);
             passTable.setEnabledAt(11, false);
-        }
+        }        
+        this.update(null, "PassUpload");
+        this.update(null, "FlightUpload");
+        this.update(null, "LocationUpload");
         for (int i = 1; i < passTable.getTabCount(); i++) {
 
             passTable.setEnabledAt(i, false);
@@ -1474,9 +1481,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
     private void btnCreateAirplaneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAirplaneActionPerformed
         // TODO add your handling code here:
         String id = airplaneId.getText();
-        String brand = jTextField9.getText();
+        String brand = createAirplaneBrand.getText();
         String model = airplaneModel.getText();
-        String maxCapacity = jTextField11.getText();
+        String maxCapacity = createAirplaneMaxCapacity.getText();
         String airline = airplaneAirline.getText();
 
         Response response = PlaneController.createPlane(id, brand, model, maxCapacity, airline);
@@ -1487,9 +1494,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         } else {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
             airplaneId.setText("");
-            jTextField9.setText("");
+            createAirplaneBrand.setText("");
             airplaneModel.setText("");
-            jTextField11.setText("");
+            createAirplaneMaxCapacity.setText("");
             airplaneAirline.setText("");
         }
 
@@ -1596,9 +1603,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
     private void btnAddFlightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFlightActionPerformed
         // TODO add your handling code here:
         String passengerId = PassengerIdToAddFlight.getText();
-        String flightId = addFlight.getItemAt(addFlight.getSelectedIndex());
+        String AddFlightId = addFlight.getItemAt(addFlight.getSelectedIndex());
 
-        Response response = PassengerController.addFlightPassenger(passengerId, flightId);
+        Response response = PassengerController.addFlightPassenger(passengerId, AddFlightId);
         if (response.getStatus() >= 500) {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
         } else if (response.getStatus() >= 400) {
@@ -1611,11 +1618,11 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
 
     private void btnFlightDelayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFlightDelayActionPerformed
         // TODO add your handling code here:
-        String flightId = flightDelayId.getItemAt(flightDelayId.getSelectedIndex());
+        String DelayFlightID = flightDelayId.getItemAt(flightDelayId.getSelectedIndex());
         String hours = flightDelayHour.getItemAt(flightDelayHour.getSelectedIndex());
         String minutes = "" + flightDelayMinute.getItemAt(flightDelayMinute.getSelectedIndex());
 
-        Response response = FlightController.delayFlight(flightId, hours, minutes);
+        Response response = FlightController.delayFlight(DelayFlightID, hours, minutes);
         if (response.getStatus() >= 500) {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
         } else if (response.getStatus() >= 400) {
@@ -1630,83 +1637,27 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
 
     private void btnRefreshPassFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPassFlightsActionPerformed
         // TODO add your handling code here:
-        String passengerId = userSelect.getItemAt(userSelect.getSelectedIndex());
-        DefaultTableModel model = (DefaultTableModel) passflightsTable.getModel();
-        Response response = PassengerController.getFlightsPassenger(passengerId, model);
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-            passflightsTable.setModel((DefaultTableModel) response.getObject());
-        }
+        this.update("Show", "PassAddFlight");
     }//GEN-LAST:event_btnRefreshPassFlightsActionPerformed
 
     private void btnRefreshPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPassActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) passInfoTable.getModel();
-        Response response = PassengerController.getPassengerToTable(model);
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-            passInfoTable.setModel((DefaultTableModel) response.getObject());
-            this.userSelect.removeAllItems();
-            this.userSelect.addItem("Select User");
-            for (int i = 0; i < passInfoTable.getRowCount(); i++) {
-                this.userSelect.addItem("" + passInfoTable.getValueAt(i, 0));
-            }
-        }
+        this.update(null, "PassUpload");
     }//GEN-LAST:event_btnRefreshPassActionPerformed
 
     private void btnRefreshFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshFlightsActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) flightsTable.getModel();
-        Response response = FlightController.getFlightstoTable(model);
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-            flightsTable.setModel((DefaultTableModel) response.getObject());
-            this.addFlight.removeAllItems();
-            this.addFlight.addItem("Flight");
-            for (int i = 0; i < flightsTable.getRowCount(); i++) {
-                this.addFlight.addItem("" + flightsTable.getValueAt(i, 0));
-            }
-        }
+        this.update(null, "FlightUpload");
     }//GEN-LAST:event_btnRefreshFlightsActionPerformed
 
     private void btnRefreshPlanesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPlanesActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) planesTable.getModel();
-        Response response = PlaneController.getPlanesToTable(model);
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-            planesTable.setModel((DefaultTableModel) response.getObject());
-        }
+        this.update(null, "PlanesUpload");
     }//GEN-LAST:event_btnRefreshPlanesActionPerformed
 
     private void btnRefreshLocationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshLocationsActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) locationsTable.getModel();
-        Response response = LocationController.getLocationsToTable(model);
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-            locationsTable.setModel((DefaultTableModel) response.getObject());
-        }
+        this.update(null, "LocationUpload");
     }//GEN-LAST:event_btnRefreshLocationsActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
@@ -1717,20 +1668,12 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         try {
             String id = userSelect.getSelectedItem().toString();
             if (!id.equals(userSelect.getItemAt(0))) {
+                passId.setText(id);
                 passUpdId.setText(id);
                 PassengerIdToAddFlight.setText(id);
-                String passengerId = userSelect.getItemAt(userSelect.getSelectedIndex());
-                DefaultTableModel model = (DefaultTableModel) passflightsTable.getModel();
-                Response response = PassengerController.getFlightsPassenger(passengerId, model);
-                if (response.getStatus() >= 500) {
-                    JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-                } else if (response.getStatus() >= 400) {
-                    JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-                    passflightsTable.setModel((DefaultTableModel) response.getObject());
-                }
+                this.update(null, "PassAddFlight");                
             } else {
+                passId.setText("");
                 passUpdId.setText("");
                 PassengerIdToAddFlight.setText("");
             }
@@ -1770,6 +1713,8 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
     private javax.swing.JButton btnRefreshPassFlights;
     private javax.swing.JButton btnRefreshPlanes;
     private javax.swing.JButton btnRegister;
+    private javax.swing.JTextField createAirplaneBrand;
+    private javax.swing.JTextField createAirplaneMaxCapacity;
     private javax.swing.JComboBox<String> flightArriLocation;
     private javax.swing.JComboBox<String> flightDelayHour;
     private javax.swing.JComboBox<String> flightDelayId;
@@ -1853,8 +1798,6 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextField jTextField11;
-    private javax.swing.JTextField jTextField9;
     private javax.swing.JTable locationsTable;
     private core.views.PanelRound panelRound1;
     private core.views.PanelRound panelRound2;
@@ -1895,7 +1838,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 model = (DefaultTableModel) passInfoTable.getModel();
                 model.addRow((Object[]) arg);
                 id = (Object[]) arg;
-                this.userSelect.addItem("" + id[0]);
+                userSelect.addItem("" + id[0]);
                 break;
             case "PassUpload":
                 model = (DefaultTableModel) passInfoTable.getModel();
@@ -1906,21 +1849,21 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     passInfoTable.setModel((DefaultTableModel) response.getObject());
-                    this.userSelect.removeAllItems();
-                    this.userSelect.addItem("Select User");
+                    userSelect.removeAllItems();
+                    userSelect.addItem("Select User");
                     for (int i = 0; i < passInfoTable.getRowCount(); i++) {
-                        this.userSelect.addItem("" + passInfoTable.getValueAt(i, 0));
+                        userSelect.addItem(String.valueOf(passInfoTable.getValueAt(i, 0)));
                     }
                 }
                 break;
             case "PassAddFlight":
-                model = (DefaultTableModel) passflightsTable.getModel();
-                response = FlightController.getFlightstoTable(model);
-                if (response.getStatus() >= 500) {
+                response = PassengerController.getFlightsPassenger(userSelect.getSelectedItem().toString(), (DefaultTableModel) passflightsTable.getModel());
+                if (response.getStatus() >= 500 && arg.equals("Show")) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-                } else if (response.getStatus() >= 400) {
+                } else if (response.getStatus() >= 400 && arg.equals("Show")) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
+                    JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
                     passflightsTable.setModel((DefaultTableModel) response.getObject());
                 }
                 break;
@@ -1962,6 +1905,11 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     planesTable.setModel((DefaultTableModel) response.getObject());
+                    flightPlane.removeAllItems();
+                    flightPlane.addItem("Plane");
+                    for (int i = 0; i < planesTable.getRowCount(); i++) {
+                        this.flightPlane.addItem("" + planesTable.getValueAt(i, 0));
+                    }
                 }
                 break;
             case "LocationInfo":
@@ -1971,10 +1919,29 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 this.flightDeparLocation.addItem("" + id[0]);
                 this.flightArriLocation.addItem("" + id[0]);
                 this.flightScaLocation.addItem("" + id[0]);
-                System.out.println("" + id[0]);
                 break;
+            case "LocationUpload":
+                model = (DefaultTableModel) locationsTable.getModel();
+                response = LocationController.getLocationsToTable(model);
+                if (response.getStatus() >= 500) {
+                    JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+                } else if (response.getStatus() >= 400) {
+                    JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
+                } else {
+                    locationsTable.setModel((DefaultTableModel) response.getObject());
+                    flightDeparLocation.removeAllItems();
+                    flightArriLocation.removeAllItems();
+                    flightScaLocation.removeAllItems();
+                    flightDeparLocation.addItem("Location");
+                    flightArriLocation.addItem("Location");
+                    flightScaLocation.addItem("Location");
+                    for (int i = 0; i < planesTable.getRowCount(); i++) {
+                        flightDeparLocation.addItem("" + locationsTable.getValueAt(i, 0));
+                        flightArriLocation.addItem("" + locationsTable.getValueAt(i, 0));
+                        flightScaLocation.addItem("" + locationsTable.getValueAt(i, 0));
+                    }
+                }
         }
     }
-    
-    
+
 }

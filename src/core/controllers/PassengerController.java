@@ -19,6 +19,7 @@ import core.views.AirportFrame;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -229,9 +230,10 @@ public class PassengerController extends Observable implements Observer {
 
     public static Response addFlightPassenger(String passengerId, String flightId) {
         try {
+            System.out.println(passengerId);
             long idLong;
             try {
-                idLong = Long.parseLong(passengerId);
+                idLong = Long.parseLong(passengerId, 10);
                 if (idLong < 0) {
                     return new Response("Passanger id must be positive", Status.BAD_REQUEST);
                 } else if (passengerId.length() > 15) {
@@ -240,11 +242,13 @@ public class PassengerController extends Observable implements Observer {
             } catch (NumberFormatException ex) {
                 return new Response("Passanger id must be numeric", Status.BAD_REQUEST);
             }
-
             PassengerStorage storage = PassengerStorage.getInstance();
-            Passenger passenger = storage.get(idLong);
+            Passenger passenger = storage.get(idLong);          
             if (passenger == null) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
+            }
+            if (flightId.equals("Flight")) {
+                return new Response("Flight must be selected", Status.NOT_FOUND);
             }
             Response response = FlightController.readFlight(flightId);
             if (response.getStatus() >= 400) {
@@ -256,20 +260,21 @@ public class PassengerController extends Observable implements Observer {
             }
             if (passenger.getFlights().contains(flight)) {
                 return new Response("Passenger already on flight", Status.BAD_REQUEST);
-            }
-            FlightService.addPassenger(flight, passenger);
+            }               
+                passenger.addFlight(flight);
             return new Response("Passenger succesfully added to the flight", Status.OK);
         } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
-    public static Response getPassengerToTable (DefaultTableModel model) {
-        try {            
+
+    public static Response getPassengerToTable(DefaultTableModel model) {
+        try {
             PassengerStorage storage = PassengerStorage.getInstance();
             ArrayList<Passenger> passengers = storage.getPassengers();
-            
+
             if (passengers.isEmpty()) {
-                return new Response("Passengers is empty" , Status.NOT_FOUND);
+                return new Response("Passengers is empty", Status.NOT_FOUND);
             }
             try {
                 SortPassengers.sortPassengers(passengers);
@@ -281,22 +286,33 @@ public class PassengerController extends Observable implements Observer {
                 Object[] passengerInfo = new Object[]{passenger.getId(), PassengerService.getFullName(passenger), passenger.getBirthDate(), PassengerService.calculateAge(passenger), PassengerService.generateFullPhone(passenger), passenger.getCountry(), PassengerService.getNumFlights(passenger)};
                 model.addRow(passengerInfo);
             }
-            return new Response("Passangers table updated", Status.OK, model);            
-        }catch (Exception ex) {
+            return new Response("Passangers table updated", Status.OK, model);
+        } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    public static Response getFlightsPassenger (String id, DefaultTableModel model) {
-        try {            
-            PassengerStorage storage = PassengerStorage.getInstance();
-            Passenger passenger = storage.get(id);         
-            if(passenger == null) {
-                return new Response("Passengers not found" , Status.NOT_FOUND);
+
+    public static Response getFlightsPassenger(String id, DefaultTableModel model) {
+        try {
+            long idLong;
+            try {
+                idLong = Long.parseLong(id);
+                if (idLong < 0) {
+                    return new Response("Passanger id must be positive", Status.BAD_REQUEST);
+                } else if (id.length() > 15) {
+                    return new Response("Passanger id must have a maximum of 15 digits", Status.BAD_REQUEST);
+                }
+            } catch (NumberFormatException ex) {
+                return new Response("Passanger id must be numeric", Status.BAD_REQUEST);
             }
-            ArrayList<Flight> flights = passenger.getFlights();            
+            PassengerStorage storage = PassengerStorage.getInstance();
+            Passenger passenger = storage.get(idLong);
+            if (passenger == null) {
+                return new Response("Passengers not found", Status.NOT_FOUND);
+            }
+            ArrayList<Flight> flights = passenger.getFlights();
             if (flights.isEmpty()) {
-                return new Response("Passengers is empty" , Status.NOT_FOUND);
+                return new Response("Passengers flights is empty", Status.NOT_FOUND);
             }
             try {
                 SortFlights.sortFlights(flights);
@@ -305,23 +321,23 @@ public class PassengerController extends Observable implements Observer {
             }
             model.setRowCount(0);
             for (Flight flight : flights) {
-                Object [] flightInfo = new Object[]{flight.getId(), flight.getDepartureLocation().getAirportId(), flight.getArrivalLocation().getAirportId(), (flight.getScaleLocation() == null ? "-" : flight.getScaleLocation().getAirportId()), flight.getDepartureDate(), FlightService.calculateArrivalDate(flight), flight.getPlane().getId(), FlightService.getNumPassengers(flight)};
+                Object[] flightInfo = new Object[]{flight.getId(), flight.getDepartureDate(), FlightService.calculateArrivalDate(flight)};
                 model.addRow(flightInfo);
             }
-            return new Response("Passanger flights table updated", Status.OK, model);            
-        }catch (Exception ex) {
+            return new Response("Passanger flights table updated", Status.OK, model);
+        } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    public static Response getData () {
+
+    public static Response getData() {
         try {
             PassengerStorage storage = PassengerStorage.getInstance();
             if (!storage.getDataToJSON()) {
                 return new Response("No information to load", Status.NO_CONTENT);
             }
             return new Response("Passengers load succesfully", Status.OK);
-        } catch (Exception ex) {            
+        } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
     }
@@ -339,6 +355,6 @@ public class PassengerController extends Observable implements Observer {
 
     @Override
     public void notifyObserver(Object object, String type) {
-        observer.update( object, type);
+        observer.update(object, type);
     }
 }
