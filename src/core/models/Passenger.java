@@ -2,18 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package airport;
+package core.models;
 
+import core.controllers.PassengerController;
+import core.models.observers.Observable;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 
-/**
- *
- * @author edangulo
- */
-public class Passenger {
-    
+public class Passenger extends Observable implements Cloneable {
+
     private final long id;
     private String firstname;
     private String lastname;
@@ -24,6 +21,7 @@ public class Passenger {
     private ArrayList<Flight> flights;
 
     public Passenger(long id, String firstname, String lastname, LocalDate birthDate, int countryPhoneCode, long phone, String country) {
+        super(new PassengerController());
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -34,10 +32,7 @@ public class Passenger {
         this.flights = new ArrayList<>();
     }
 
-    public void addFlight(Flight flight) {
-        this.flights.add(flight);
-    }
-    
+    // Getters (obligatorios para PassengerService)
     public long getId() {
         return id;
     }
@@ -69,9 +64,16 @@ public class Passenger {
     public ArrayList<Flight> getFlights() {
         return flights;
     }
+    public void addFlight (Flight flight) {
+        this.flights.add(flight);
+        flight.addPassenger(this);
+        notifyObserver(null, "PassAddFlight");
+    }
 
+    // Setters si vas a modificar datos
     public void setFirstname(String firstname) {
         this.firstname = firstname;
+        notifyObserver(null, "PassUpload");
     }
 
     public void setLastname(String lastname) {
@@ -93,21 +95,25 @@ public class Passenger {
     public void setCountry(String country) {
         this.country = country;
     }
-    
-    public String getFullname() {
-        return firstname + " " + lastname;
+
+    public void setFlights(ArrayList<Flight> flights) {
+        this.flights = flights;
     }
     
-    public String generateFullPhone() {
-        return "+" + countryPhoneCode + " " + phone;
+    
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update( object, type);
+    }
+
+    @Override
+    public Passenger clone() {
+        Passenger clone = new Passenger(this.id, this.firstname, this.lastname, this.birthDate, this.countryPhoneCode, this.phone, this.country);
+        clone.setFlights(this.flights);
+        return clone;
     }
     
-    public int calculateAge() {
-        return Period.between(birthDate, LocalDate.now()).getYears();
-    }
     
-    public int getNumFlights() {
-        return flights.size();
-    }
-    
+
 }
