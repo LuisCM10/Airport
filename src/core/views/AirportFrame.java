@@ -1642,22 +1642,22 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
 
     private void btnRefreshPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPassActionPerformed
         // TODO add your handling code here:
-        this.update(null, "PassUpload");
+        this.update("Show", "PassUpload");
     }//GEN-LAST:event_btnRefreshPassActionPerformed
 
     private void btnRefreshFlightsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshFlightsActionPerformed
         // TODO add your handling code here:
-        this.update(null, "FlightUpload");
+        this.update("Show", "FlightUpload");
     }//GEN-LAST:event_btnRefreshFlightsActionPerformed
 
     private void btnRefreshPlanesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPlanesActionPerformed
         // TODO add your handling code here:
-        this.update(null, "PlanesUpload");
+        this.update("Show", "PlanesUpload");
     }//GEN-LAST:event_btnRefreshPlanesActionPerformed
 
     private void btnRefreshLocationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshLocationsActionPerformed
         // TODO add your handling code here:
-        this.update(null, "LocationUpload");
+        this.update("Show", "LocationUpload");
     }//GEN-LAST:event_btnRefreshLocationsActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
@@ -1843,9 +1843,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             case "PassUpload":
                 model = (DefaultTableModel) passInfoTable.getModel();
                 response = PassengerController.getPassengerToTable(model);
-                if (response.getStatus() >= 500) {
+                if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-                } else if (response.getStatus() >= 400) {
+                } else if (response.getStatus() >= 400 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     passInfoTable.setModel((DefaultTableModel) response.getObject());
@@ -1858,9 +1858,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 break;
             case "PassAddFlight":
                 response = PassengerController.getFlightsPassenger(userSelect.getSelectedItem().toString(), (DefaultTableModel) passflightsTable.getModel());
-                if (response.getStatus() >= 500 && arg.equals("Show")) {
+                if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-                } else if (response.getStatus() >= 400 && arg.equals("Show")) {
+                } else if (response.getStatus() >= 400 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
@@ -1876,9 +1876,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             case "FlightUpload":
                 model = (DefaultTableModel) flightsTable.getModel();
                 response = FlightController.getFlightstoTable(model);
-                if (response.getStatus() >= 500) {
+                if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-                } else if (response.getStatus() >= 400) {
+                } else if (response.getStatus() >= 400 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     flightsTable.setModel((DefaultTableModel) response.getObject());
@@ -1899,9 +1899,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             case "PlaneUpload":
                 model = (DefaultTableModel) planesTable.getModel();
                 response = PlaneController.getPlanesToTable(model);
-                if (response.getStatus() >= 500) {
+                if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-                } else if (response.getStatus() >= 400) {
+                } else if (response.getStatus() >= 400 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     planesTable.setModel((DefaultTableModel) response.getObject());
@@ -1923,9 +1923,9 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             case "LocationUpload":
                 model = (DefaultTableModel) locationsTable.getModel();
                 response = LocationController.getLocationsToTable(model);
-                if (response.getStatus() >= 500) {
+                if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-                } else if (response.getStatus() >= 400) {
+                } else if (response.getStatus() >= 400 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     locationsTable.setModel((DefaultTableModel) response.getObject());
