@@ -4,7 +4,9 @@
  */
 package core.models.storage;
 
+import core.controllers.PlaneController;
 import core.models.Plane;
+import core.models.observers.Observable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,12 +18,13 @@ import org.json.JSONObject;
  *
  * @author ASUS
  */
-public class PlaneStorage implements Storage, uploadData {
+public class PlaneStorage extends Observable implements Storage, uploadData {
 
     private ArrayList<Plane> planes;
     private static PlaneStorage instance;
 
     public PlaneStorage() {
+        super(new PlaneController());
         this.planes = new ArrayList<>();
     }
 
@@ -45,6 +48,7 @@ public class PlaneStorage implements Storage, uploadData {
             }
         }
         this.planes.add(plane);
+        notifyObserver(plane, "PlaneInfo");
         return true;
     }
 
@@ -93,5 +97,10 @@ public class PlaneStorage implements Storage, uploadData {
             }            
         }
         return true;
+    }
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update(object, type);
     }
 }

@@ -5,6 +5,7 @@
 package main;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import core.controllers.DataController;
 import core.views.AirportFrame;
 import javax.swing.UIManager;
 
@@ -19,12 +20,15 @@ public class Main {
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }
+        DataController.loadData();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                AirportFrame.getInstance().setVisible(true);
+                new AirportFrame().setVisible(true);                
             }
         });
+        
+        
     }
 }
 

@@ -21,12 +21,13 @@ import org.json.JSONObject;
  *
  * @author ASUS
  */
-public class PassengerStorage implements Storage, uploadData {
+public class PassengerStorage extends Observable implements Storage, uploadData {
 
     private ArrayList<Passenger> passengers;
     private static PassengerStorage instance;
 
     public PassengerStorage() {
+        super(new PassengerController());
         this.passengers = new ArrayList<>();
     }
 
@@ -50,6 +51,7 @@ public class PassengerStorage implements Storage, uploadData {
             }
         }
         this.passengers.add(passenger);
+        notifyObserver(passenger, "PassInfo");
         return true;
     }
 
@@ -87,19 +89,21 @@ public class PassengerStorage implements Storage, uploadData {
         JSONArray passengerArray = new JSONArray(content);
         for (int i = 0; i < passengerArray.length(); i++) {
             JSONObject p = passengerArray.getJSONObject(i);
-            if (!this.add(new Passenger(
+            this.add(new Passenger(
                     p.getLong("id"),
                     p.getString("firstname"),
                     p.getString("lastname"),
                     LocalDate.parse(p.getString("birthDate")),
                     p.getInt("countryPhoneCode"),
                     p.getLong("phone"),
-                    p.getString("country")
-            ))) {
-                return false;
-            }
+                    p.getString("country")));
         }
         return true;
+    }
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update(object, type);
     }
 
 }

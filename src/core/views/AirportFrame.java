@@ -5,6 +5,7 @@
 package core.views;
 
 import core.controllers.FlightController;
+import core.controllers.DataController;
 import core.controllers.LocationController;
 import core.controllers.PassengerController;
 import core.controllers.PlaneController;
@@ -18,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author edangulo
  */
-public class AirportFrame extends javax.swing.JFrame implements Observer{
+public class AirportFrame extends javax.swing.JFrame implements Observer {
 
     /**
      * Creates new form AirportFrame
@@ -26,7 +27,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
     private int x, y;
     private static AirportFrame instance;
 
-    public AirportFrame() {
+    public AirportFrame() {        
         initComponents();
 
         this.setBackground(new Color(0, 0, 0, 0));
@@ -37,7 +38,6 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
         this.generateHours();
         this.generateMinutes();
         this.blockPanels();
-        this.loadData();
     }
 
     public static AirportFrame getInstance() {
@@ -1453,7 +1453,6 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
             passPrefix.setText("");
             passNumTelefonic.setText("");
             passCountry.setText("");
-            this.userSelect.addItem("" + id);
         }
 
     }//GEN-LAST:event_btnRegisterActionPerformed
@@ -1478,7 +1477,6 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
             airplaneModel.setText("");
             jTextField11.setText("");
             airplaneAirline.setText("");
-            this.flightPlane.addItem(id);
         }
 
     }//GEN-LAST:event_btnCreateAirplaneActionPerformed
@@ -1505,9 +1503,6 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
             airportCountry.setText("");
             airportLat.setText("");
             airportLon.setText("");
-            this.flightDeparLocation.addItem(id);
-            this.flightArriLocation.addItem(id);
-            this.flightScaLocation.addItem(id);
         }
     }//GEN-LAST:event_btnAirportCreateActionPerformed
 
@@ -1547,8 +1542,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
             flightDurArrHour.setSelectedIndex(0);
             flightDurArrMinute.setSelectedIndex(0);
             flightDurScaHour.setSelectedIndex(0);
-            flightDurScaMinute.setSelectedIndex(0);
-            this.addFlight.addItem(id);
+            flightDurScaMinute.setSelectedIndex(0);            
         }
 
 
@@ -1870,13 +1864,17 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void update( Object arg, String type) {
+    public void update(Object arg, String type) {
+        Object[] id;
         DefaultTableModel model = null;
         Response response;
+        System.out.println("Actualizacion en el observador");
         switch (type) {
             case "PassInfo":
                 model = (DefaultTableModel) passInfoTable.getModel();
                 model.addRow((Object[]) arg);
+                id = (Object[]) arg;
+                this.userSelect.addItem(""+id[0]);
                 break;
             case "PassUpload":
                 model = (DefaultTableModel) passInfoTable.getModel();
@@ -1888,6 +1886,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
                 } else {
                     passInfoTable.setModel((DefaultTableModel) response.getObject());
                 }
+                break;
             case "PassAddFlight":
                 model = (DefaultTableModel) passflightsTable.getModel();
                 response = FlightController.getFlightstoTable(model);
@@ -1898,9 +1897,12 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
                 } else {
                     passflightsTable.setModel((DefaultTableModel) response.getObject());
                 }
+                break;
             case "FlightInfo":
                 model = (DefaultTableModel) flightsTable.getModel();
                 model.addRow((Object[]) arg);
+                id = (Object[]) arg;
+                this.addFlight.addItem("" + id[0]);
                 break;
             case "FlightUpload":
                 model = (DefaultTableModel) flightsTable.getModel();
@@ -1916,6 +1918,8 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
             case "PlaneInfo":
                 model = (DefaultTableModel) planesTable.getModel();
                 model.addRow((Object[]) arg);
+                id = (Object[]) arg;
+                this.flightPlane.addItem("" + id[0]);
                 break;
             case "PlaneUpload":
                 model = (DefaultTableModel) planesTable.getModel();
@@ -1927,50 +1931,16 @@ public class AirportFrame extends javax.swing.JFrame implements Observer{
                 } else {
                     planesTable.setModel((DefaultTableModel) response.getObject());
                 }
-            case "LocationInfo":
+                break;
+            case "LocationInfo":                
                 model = (DefaultTableModel) locationsTable.getModel();
                 model.addRow((Object[]) arg);
+                id = (Object[]) arg;
+                this.flightDeparLocation.addItem("" + id[0]);
+                this.flightArriLocation.addItem("" + id[0]);
+                this.flightScaLocation.addItem("" + id[0]);
+                System.out.println("" + id[0]);
                 break;
-
-            default:
-                model = (DefaultTableModel) passflightsTable.getModel();
-                model.addRow((Object[]) arg);
-        }
-    }
-
-    private void loadData() {
-        Response response;
-        response = LocationController.getData();
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-        }
-        response = PlaneController.getData();
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-        }
-        response = PassengerController.getData();
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-        }
-        response = FlightController.getData();
-        if (response.getStatus() >= 500) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-        } else if (response.getStatus() >= 400) {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

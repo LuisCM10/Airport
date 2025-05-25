@@ -7,8 +7,12 @@ package core.models.storage;
 import core.controllers.FlightController;
 import core.controllers.utils.Response;
 import core.models.Flight;
+import core.models.Location;
+import core.models.Plane;
+import core.models.observers.Observable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,12 +21,13 @@ import org.json.JSONObject;
  *
  * @author ASUS
  */
-public class FlightStorage implements Storage, uploadData {
+public class FlightStorage extends Observable implements Storage, uploadData {
 
     private static FlightStorage instance;
     private ArrayList<Flight> flights;
 
     public FlightStorage() {
+        super(new FlightController());
         this.flights = new ArrayList<>();
     }
 
@@ -45,7 +50,8 @@ public class FlightStorage implements Storage, uploadData {
                 return false;
             }
         }
-        this.flights.add(flight);        
+        this.flights.add(flight);
+        notifyObserver(flight, "FlightInfo");
         return true;
     }
 
@@ -70,10 +76,10 @@ public class FlightStorage implements Storage, uploadData {
             }
         }
         return false;
-    }   
-    
+    }
+
     @Override
-    public boolean getDataToJSON() { 
+    public boolean getDataToJSON() {
         try {
             String content;
             // Leer vuelos
@@ -84,25 +90,33 @@ public class FlightStorage implements Storage, uploadData {
 
                 String id = f.getString("id");
                 String planeId = f.getString("plane");
+                Plane plane = PlaneStorage.getInstance().get(planeId);
                 String departureId = f.getString("departureLocation");
+                Location departure = LocationStorage.getInstance().get(departureId);
                 String arrivalId = f.getString("arrivalLocation");
-                String scaleId = f.getString("scaleLocation");
-                String departureDate = f.getString("departureDate");
-                String hArrival = f.getString("hoursDurationArrival");
-                String mArrival = f.getString("minutesDurationArrival");
-                String hScale = f.getString("hoursDurationScale");
-                String mScale = f.getString("minutesDurationScale");
-                Response response = FlightController.loadFlight(id, planeId, departureDate, arrivalId, scaleId, departureDate, arrivalId, arrivalId, departureDate, departureDate);
-                if (response.getStatus() >= 400) {
-                    return false;
-                }                
+                Location arrival = LocationStorage.getInstance().get(arrivalId);
+                String scaleId = "Location";
+                Location scale = null;
+                if (!f.isNull("scaleLocation")) {
+                    scaleId = f.getString("scaleLocation");
+                    scale = LocationStorage.getInstance().get(scaleId);
+                }
+                LocalDateTime departureDate = LocalDateTime.parse(f.getString("departureDate"));
+                int hArrival = f.getInt("hoursDurationArrival");
+                int mArrival = f.getInt("minutesDurationArrival");
+                int hScale = f.getInt("hoursDurationScale");
+                int mScale = f.getInt("minutesDurationScale");                
+                this.add(new Flight(id, plane, departure, scale, arrival, departureDate, hArrival, mArrival, hScale, mScale));
             }
             return true;
         } catch (Exception e) {
             return false;
         }
     }
-    
-    
-    
+
+    @Override
+    public void notifyObserver(Object object, String type) {
+        observer.update(object, type);
+    }
+
 }
