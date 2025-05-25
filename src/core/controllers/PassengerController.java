@@ -130,7 +130,7 @@ public class PassengerController extends Observable implements Observer {
             if (passenger == null) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
             }
-            return new Response("Person found", Status.OK, passenger);
+            return new Response("Person found", Status.OK, passenger.clone());
         } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
@@ -230,7 +230,6 @@ public class PassengerController extends Observable implements Observer {
 
     public static Response addFlightPassenger(String passengerId, String flightId) {
         try {
-            System.out.println(passengerId);
             long idLong;
             try {
                 idLong = Long.parseLong(passengerId, 10);
@@ -243,7 +242,7 @@ public class PassengerController extends Observable implements Observer {
                 return new Response("Passanger id must be numeric", Status.BAD_REQUEST);
             }
             PassengerStorage storage = PassengerStorage.getInstance();
-            Passenger passenger = storage.get(idLong);          
+            Passenger passenger = storage.get(idLong);
             if (passenger == null) {
                 return new Response("Passenger not found", Status.NOT_FOUND);
             }
@@ -260,8 +259,8 @@ public class PassengerController extends Observable implements Observer {
             }
             if (passenger.getFlights().contains(flight)) {
                 return new Response("Passenger already on flight", Status.BAD_REQUEST);
-            }               
-                passenger.addFlight(flight);
+            }
+            passenger.addFlight(flight);
             return new Response("Passenger succesfully added to the flight", Status.OK);
         } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
@@ -334,7 +333,7 @@ public class PassengerController extends Observable implements Observer {
         try {
             PassengerStorage storage = PassengerStorage.getInstance();
             if (!storage.getDataToJSON()) {
-                return new Response("No information to load", Status.NO_CONTENT);
+                return new Response("No passengers information to load", Status.NOT_FOUND);
             }
             return new Response("Passengers load succesfully", Status.OK);
         } catch (Exception ex) {
@@ -348,9 +347,13 @@ public class PassengerController extends Observable implements Observer {
 
     @Override
     public void update(Object arg, String type) {
-        Passenger passenger = (Passenger) arg;
-        Object[] passengerInfo = new Object[]{passenger.getId(), PassengerService.getFullName(passenger), passenger.getBirthDate(), PassengerService.calculateAge(passenger), PassengerService.generateFullPhone(passenger), passenger.getCountry(), PassengerService.getNumFlights(passenger)};
-        notifyObserver(passengerInfo, type);
+        if (type.equals("PassInfo")) {
+            Passenger passenger = (Passenger) arg;
+            Object[] passengerInfo = new Object[]{passenger.getId(), PassengerService.getFullName(passenger), passenger.getBirthDate(), PassengerService.calculateAge(passenger), PassengerService.generateFullPhone(passenger), passenger.getCountry(), PassengerService.getNumFlights(passenger)};
+            notifyObserver(passengerInfo, type);
+        } else {
+            notifyObserver(null, type);
+        }
     }
 
     @Override

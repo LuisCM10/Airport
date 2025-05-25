@@ -23,13 +23,8 @@ public class Main {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AirportFrame().setVisible(true);
-                try {
-                    Thread.sleep(2000);
-                    DataController.loadData();
-                } catch (InterruptedException ex) {
-                    DataController.loadData();
-                }
+                AirportFrame.getInstance().setVisible(true);
+                DataController.loadData();
             }
         });
 

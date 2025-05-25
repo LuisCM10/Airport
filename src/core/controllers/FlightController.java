@@ -180,7 +180,7 @@ public class FlightController extends Observable implements Observer{
             if (flight == null) {
                 return new Response("Flight not found", Status.NOT_FOUND);
             }
-            return new Response("Flight found", Status.OK, flight);
+            return new Response("Flight found", Status.OK, flight.clone());
         } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
@@ -233,17 +233,20 @@ public class FlightController extends Observable implements Observer{
     }
     
     public static Response getFlightstoTable (DefaultTableModel model) {
-        try {            
+        try { 
+            if (model == null) {
+                return new Response("Model not load", Status.INTERNAL_SERVER_ERROR);
+            }
             FlightStorage storage = FlightStorage.getInstance();
             ArrayList<Flight> flights = storage.getFlights();
-            
-            if (flights.isEmpty()) {
-                return new Response("Flights is empty" , Status.NOT_FOUND);
-            }
+                        
             try {
                 SortFlights.sortFlights(flights);
             } catch (IllegalStateException e) {
                 return new Response("Sort error", Status.INTERNAL_SERVER_ERROR);
+            }
+            if (flights.isEmpty()) {
+                return new Response("Flights is empty" , Status.NOT_FOUND);
             }
             model.setRowCount(0);
             for (Flight flight : flights) {
@@ -260,7 +263,7 @@ public class FlightController extends Observable implements Observer{
         try {
             FlightStorage storage = FlightStorage.getInstance();
             if (!storage.getDataToJSON()) {
-                return new Response("No information to load", Status.NO_CONTENT);
+                return new Response("No flights information to load", Status.NOT_FOUND);
             }
             return new Response("Flights load succesfully", Status.OK);
         } catch (Exception ex) {            
@@ -274,14 +277,12 @@ public class FlightController extends Observable implements Observer{
 
     @Override
     public void update( Object arg, String type) { 
-        switch (type) {
-            case "FlightInfo":                
+        if(type.equals("FlightInfo")) {              
                 Flight flight = (Flight) arg;
                 Object [] flightInfo = new Object[]{flight.getId(), flight.getDepartureLocation().getAirportId(), flight.getArrivalLocation().getAirportId(), (flight.getScaleLocation() == null ? "-" : flight.getScaleLocation().getAirportId()), flight.getDepartureDate(), FlightService.calculateArrivalDate(flight), flight.getPlane().getId(), FlightService.getNumPassengers(flight)};
                 notifyObserver(flightInfo, type);
-                break;
-            case "FlightUpload":
-                notifyObserver(this, type);
+        } else {        
+                notifyObserver(null, type);
         }
     }
 

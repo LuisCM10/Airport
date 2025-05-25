@@ -97,7 +97,7 @@ public class LocationController extends Observable implements Observer {
             if (location == null) {
                 return new Response("Location not found", Status.NOT_FOUND);
             }
-            return new Response("Location found", Status.OK, location);
+            return new Response("Location found", Status.OK, location.clone());
         } catch (Exception ex) {
             return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
         }
@@ -129,15 +129,10 @@ public class LocationController extends Observable implements Observer {
 
     public static Response getData() {
         try {
-            LocationStorage storage;
-            try {
-                storage = LocationStorage.getInstance();
-            } catch (Exception ex) {
-                return new Response("Storage error", Status.INTERNAL_SERVER_ERROR);
-            }
+            LocationStorage storage = LocationStorage.getInstance();
             try {
                 if (!storage.getDataToJSON()) {
-                    return new Response("No information to load", Status.NO_CONTENT);
+                    return new Response("No locations information to load", Status.NOT_FOUND);
                 }
             } catch (Exception ex) {
                 return new Response("load Data error", Status.INTERNAL_SERVER_ERROR);
@@ -163,9 +158,14 @@ public class LocationController extends Observable implements Observer {
 
     @Override
     public void update( Object arg, String type) {
-        Location location = (Location) arg;
-        Object[] locationInfo = new Object[]{location.getAirportId(), location.getAirportName(), location.getAirportCity(), location.getAirportCountry()};
-        notifyObserver(locationInfo, type);
+        if(type.equals("LocationInfo")) {
+            Location location = (Location) arg;
+            Object[] locationInfo = new Object[]{location.getAirportId(), location.getAirportName(), location.getAirportCity(), location.getAirportCountry()};
+            notifyObserver(locationInfo, type);
+        } else {
+            notifyObserver(null, type);
+        }
+        
     }
 
     @Override

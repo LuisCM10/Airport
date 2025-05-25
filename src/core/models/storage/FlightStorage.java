@@ -50,7 +50,7 @@ public class FlightStorage extends Observable implements Storage, uploadData {
             }
         }
         flight.getPlane().addFlight(flight);
-        this.flights.add(flight);        
+        this.flights.add(flight);
         notifyObserver(flight, "FlightInfo");
         return true;
     }
@@ -60,7 +60,7 @@ public class FlightStorage extends Observable implements Storage, uploadData {
         String idStr = (String) id;
         for (Flight flight : this.flights) {
             if (flight.getId().equals(idStr)) {
-                return flight.clone();
+                return flight;
             }
         }
         return null;
@@ -95,16 +95,18 @@ public class FlightStorage extends Observable implements Storage, uploadData {
                 Location departure = LocationStorage.getInstance().get(departureId);
                 String arrivalId = f.getString("arrivalLocation");
                 Location arrival = LocationStorage.getInstance().get(arrivalId);
+                String scaleId = "Location";
                 Location scale = null;
                 if (!f.isNull("scaleLocation")) {
-                    String scaleId = f.getString("scaleLocation");
+                    scaleId = f.getString("scaleLocation");
                     scale = LocationStorage.getInstance().get(scaleId);
                 }
                 LocalDateTime departureDate = LocalDateTime.parse(f.getString("departureDate"));
                 int hArrival = f.getInt("hoursDurationArrival");
                 int mArrival = f.getInt("minutesDurationArrival");
                 int hScale = f.getInt("hoursDurationScale");
-                int mScale = f.getInt("minutesDurationScale");                
+                int mScale = f.getInt("minutesDurationScale");
+
                 this.add(new Flight(id, plane, departure, scale, arrival, departureDate, hArrival, mArrival, hScale, mScale));
             }
             return true;

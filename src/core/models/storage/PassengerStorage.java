@@ -60,7 +60,7 @@ public class PassengerStorage extends Observable implements Storage, uploadData 
         long idLong = (long) id;
         for (Passenger passenger : this.passengers) {
             if (passenger.getId() == idLong) {
-                return passenger.clone();
+                return passenger;
             }
         }
         return null;

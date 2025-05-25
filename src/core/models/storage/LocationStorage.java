@@ -57,7 +57,7 @@ public class LocationStorage extends Observable implements Storage, uploadData {
         String idStr = (String) id;
         for (Location location : this.locations) {
             if (location.getAirportId().equals(idStr)) {
-                return location.clone();
+                return location;
             }
         }
         return null;
@@ -93,9 +93,7 @@ public class LocationStorage extends Observable implements Storage, uploadData {
             String airportCountry = loc.getString("airportCountry");
             double latitude = loc.getDouble("airportLatitude");
             double longitude = loc.getDouble("airportLongitude");
-            Location location = new Location(airportId, airportName, airportCity, airportCountry, latitude, longitude);
-            this.add(location);
-            notifyObserver(location, "LocationInfo"); 
+            this.add(new Location(airportId, airportName, airportCity, airportCountry, latitude, longitude));
         }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -13,6 +13,7 @@ import core.models.observers.Observer;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -1841,8 +1842,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 userSelect.addItem("" + id[0]);
                 break;
             case "PassUpload":
-                model = (DefaultTableModel) passInfoTable.getModel();
-                response = PassengerController.getPassengerToTable(model);
+                response = PassengerController.getPassengerToTable((DefaultTableModel) passInfoTable.getModel());
                 if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
                 } else if (response.getStatus() >= 400 && arg != null) {
@@ -1872,21 +1872,25 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 model.addRow((Object[]) arg);
                 id = (Object[]) arg;
                 this.addFlight.addItem("" + id[0]);
+                this.flightDelayId.addItem("" + id[0]);
                 break;
             case "FlightUpload":
-                model = (DefaultTableModel) flightsTable.getModel();
-                response = FlightController.getFlightstoTable(model);
+                response = FlightController.getFlightstoTable((DefaultTableModel) flightsTable.getModel());
                 if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
                 } else if (response.getStatus() >= 400 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
-                    flightsTable.setModel((DefaultTableModel) response.getObject());
-                    flightsTable.setModel((DefaultTableModel) response.getObject());
+                    if (response.getObject() != null) {
+                        flightsTable.setModel((TableModel) response.getObject());
+                    }                    
                     this.addFlight.removeAllItems();
+                    this.flightDelayId.removeAllItems();
                     this.addFlight.addItem("Flight");
+                    this.flightDelayId.addItem("Flight");
                     for (int i = 0; i < flightsTable.getRowCount(); i++) {
                         this.addFlight.addItem("" + flightsTable.getValueAt(i, 0));
+                        this.flightDelayId.addItem("" + flightsTable.getValueAt(i, 0));
                     }
                 }
                 break;
@@ -1897,8 +1901,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 this.flightPlane.addItem("" + id[0]);
                 break;
             case "PlaneUpload":
-                model = (DefaultTableModel) planesTable.getModel();
-                response = PlaneController.getPlanesToTable(model);
+                response = PlaneController.getPlanesToTable((DefaultTableModel) planesTable.getModel());
                 if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
                 } else if (response.getStatus() >= 400 && arg != null) {
@@ -1921,8 +1924,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 this.flightScaLocation.addItem("" + id[0]);
                 break;
             case "LocationUpload":
-                model = (DefaultTableModel) locationsTable.getModel();
-                response = LocationController.getLocationsToTable(model);
+                response = LocationController.getLocationsToTable((DefaultTableModel) locationsTable.getModel());
                 if (response.getStatus() >= 500 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
                 } else if (response.getStatus() >= 400 && arg != null) {
