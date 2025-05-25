@@ -26,7 +26,6 @@ public class Plane extends Observable implements Cloneable{
         this.maxCapacity = maxCapacity;
         this.airline = airline;
         this.flights = new ArrayList<>();
-        notifyObserver( this,"PlaneInfo");
     }
     
     // Getters
@@ -45,8 +44,21 @@ public class Plane extends Observable implements Cloneable{
     public void setModel(String model) { this.model = model; }
     public void setAirline(String airline) { this.airline = airline; }
 
+    public void setFlights(ArrayList<Flight> flights) {
+        this.flights = flights;
+    }
+    
     @Override
     public void notifyObserver(Object object, String type) {
         observer.update( object, type);
     }
+
+    @Override
+    public Plane clone(){
+        Plane clone = new Plane(this.id, this.brand, this.model, this.maxCapacity, this.airline);
+        clone.setFlights(this.flights);
+        return clone;
+    }
+    
+    
 }

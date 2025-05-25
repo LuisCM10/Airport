@@ -5,7 +5,6 @@
 package core.models.storage;
 
 import core.controllers.FlightController;
-import core.controllers.utils.Response;
 import core.models.Flight;
 import core.models.Location;
 import core.models.Plane;
@@ -50,7 +49,8 @@ public class FlightStorage extends Observable implements Storage, uploadData {
                 return false;
             }
         }
-        this.flights.add(flight);
+        flight.getPlane().addFlight(flight);
+        this.flights.add(flight);        
         notifyObserver(flight, "FlightInfo");
         return true;
     }
@@ -60,7 +60,7 @@ public class FlightStorage extends Observable implements Storage, uploadData {
         String idStr = (String) id;
         for (Flight flight : this.flights) {
             if (flight.getId().equals(idStr)) {
-                return flight;
+                return flight.clone();
             }
         }
         return null;

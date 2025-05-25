@@ -21,11 +21,12 @@ public class Main {
             System.err.println("Failed to initialize LaF");
         }
         DataController.loadData();
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new AirportFrame().setVisible(true);                
-            }
+            }            
         });
         
         

@@ -31,7 +31,6 @@ public class Passenger extends Observable implements Cloneable {
         this.phone = phone;
         this.country = country;
         this.flights = new ArrayList<>();
-        notifyObserver( this, "PassInfo");
     }
 
     // Getters (obligatorios para PassengerService)
@@ -98,9 +97,24 @@ flight.addPassenger(this);
         this.country = country;
     }
 
+    public void setFlights(ArrayList<Flight> flights) {
+        this.flights = flights;
+    }
+    
+    
+
     @Override
     public void notifyObserver(Object object, String type) {
         observer.update( object, type);
     }
+
+    @Override
+    public Passenger clone() {
+        Passenger clone = new Passenger(this.id, this.firstname, this.lastname, this.birthDate, this.countryPhoneCode, this.phone, this.country);
+        clone.setFlights(this.flights);
+        return clone;
+    }
+    
+    
 
 }

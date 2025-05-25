@@ -60,6 +60,12 @@ public class Location extends Observable implements Cloneable {
     public void notifyObserver(Object object, String type) {
         observer.update( object, type);
     }
+
+    @Override
+    public Location clone() {
+        Location clone = new Location(this.airportId, this.airportName, this.airportCity, this.airportCountry, this.airportLatitude, this.airportLongitude);
+        return clone;
+    }
     
     
 }

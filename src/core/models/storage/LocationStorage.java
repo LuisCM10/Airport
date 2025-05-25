@@ -57,7 +57,7 @@ public class LocationStorage extends Observable implements Storage, uploadData {
         String idStr = (String) id;
         for (Location location : this.locations) {
             if (location.getAirportId().equals(idStr)) {
-                return location;
+                return location.clone();
             }
         }
         return null;

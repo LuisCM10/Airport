@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 public class DataController {
     
     
-    public static void loadData() {
+    public static void loadData(){
         Response response;
         System.out.println("Cargando Locations");
         response = LocationController.getData();

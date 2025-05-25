@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Flight extends Observable {
+public class Flight extends Observable implements Cloneable {
 
     private final String id;
     private final Plane plane;
@@ -40,8 +40,8 @@ public class Flight extends Observable {
         this.minutesDurationArrival = minutesDurationArrival;
         this.hoursDurationScale = hoursDurationScale;
         this.minutesDurationScale = minutesDurationScale;
-        this.plane.addFlight(this);
-        notifyObserver( this, "FlightInfo");
+        
+        
     }
 
     // Getters necesarios
@@ -98,10 +98,20 @@ public class Flight extends Observable {
     public int getMinutesDurationArrival() {
         return minutesDurationArrival;
     }
+    
 
     @Override
     public void notifyObserver(Object object, String type) {
         observer.update( object, type);
     }
+
+    @Override
+    public Flight clone(){
+        Flight clone = new Flight(this.id, this.plane, this.departureLocation, this.scaleLocation, this.arrivalLocation, this.departureDate, this.hoursDurationArrival, this.minutesDurationArrival, this.hoursDurationScale, this.minutesDurationScale );
+        clone.getPassengers().addAll(passengers);
+        return clone;
+    }
+    
+    
 
 }

@@ -57,7 +57,7 @@ public class PlaneStorage extends Observable implements Storage, uploadData {
         String idStr = (String) id;
         for (Plane plane : this.planes) {
             if (plane.getId().equals(idStr)) {
-                return plane;
+                return plane.clone();
             }
         }
         return null;

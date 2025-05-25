@@ -26,8 +26,8 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
      */
     private int x, y;
     private static AirportFrame instance;
-
-    public AirportFrame() {        
+    private boolean done = false;
+    public AirportFrame() {
         initComponents();
 
         this.setBackground(new Color(0, 0, 0, 0));
@@ -1400,7 +1400,11 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         if (user.isSelected()) {
             user.setSelected(false);
             userSelect.setSelectedIndex(0);
-
+            for (int i = 1; i < passTable.getTabCount(); i++) {
+                passTable.setEnabledAt(i, false);
+            }
+            passTable.setEnabledAt(5, true);
+            passTable.setEnabledAt(6, true);
         }
         for (int i = 1; i < passTable.getTabCount(); i++) {
             passTable.setEnabledAt(i, true);
@@ -1412,6 +1416,16 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
         if (administrator.isSelected()) {
             administrator.setSelected(false);
+            for (int i = 1; i < passTable.getTabCount(); i++) {
+
+                passTable.setEnabledAt(i, true);
+
+            }
+            passTable.setEnabledAt(9, false);
+            passTable.setEnabledAt(5, false);
+            passTable.setEnabledAt(6, false);
+            passTable.setEnabledAt(7, false);
+            passTable.setEnabledAt(11, false);
         }
         for (int i = 1; i < passTable.getTabCount(); i++) {
 
@@ -1542,7 +1556,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             flightDurArrHour.setSelectedIndex(0);
             flightDurArrMinute.setSelectedIndex(0);
             flightDurScaHour.setSelectedIndex(0);
-            flightDurScaMinute.setSelectedIndex(0);            
+            flightDurScaMinute.setSelectedIndex(0);
         }
 
 
@@ -1567,7 +1581,6 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-            passId.setText("");
             passFirstName.setText("");
             passLastName.setText("");
             passBirthYear.setText("");
@@ -1592,7 +1605,6 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-            PassengerIdToAddFlight.setText("");
             addFlight.setSelectedIndex(0);
         }
     }//GEN-LAST:event_btnAddFlightActionPerformed
@@ -1642,6 +1654,11 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         } else {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
             passInfoTable.setModel((DefaultTableModel) response.getObject());
+            this.userSelect.removeAllItems();
+            this.userSelect.addItem("Select User");
+            for (int i = 0; i < passInfoTable.getRowCount(); i++) {
+                this.userSelect.addItem("" + passInfoTable.getValueAt(i, 0));
+            }
         }
     }//GEN-LAST:event_btnRefreshPassActionPerformed
 
@@ -1656,6 +1673,11 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         } else {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
             flightsTable.setModel((DefaultTableModel) response.getObject());
+            this.addFlight.removeAllItems();
+            this.addFlight.addItem("Flight");
+            for (int i = 0; i < flightsTable.getRowCount(); i++) {
+                this.addFlight.addItem("" + flightsTable.getValueAt(i, 0));
+            }
         }
     }//GEN-LAST:event_btnRefreshFlightsActionPerformed
 
@@ -1866,15 +1888,14 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
     @Override
     public void update(Object arg, String type) {
         Object[] id;
-        DefaultTableModel model = null;
+        DefaultTableModel model;
         Response response;
-        System.out.println("Actualizacion en el observador");
         switch (type) {
             case "PassInfo":
                 model = (DefaultTableModel) passInfoTable.getModel();
                 model.addRow((Object[]) arg);
                 id = (Object[]) arg;
-                this.userSelect.addItem(""+id[0]);
+                this.userSelect.addItem("" + id[0]);
                 break;
             case "PassUpload":
                 model = (DefaultTableModel) passInfoTable.getModel();
@@ -1885,6 +1906,11 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     passInfoTable.setModel((DefaultTableModel) response.getObject());
+                    this.userSelect.removeAllItems();
+                    this.userSelect.addItem("Select User");
+                    for (int i = 0; i < passInfoTable.getRowCount(); i++) {
+                        this.userSelect.addItem("" + passInfoTable.getValueAt(i, 0));
+                    }
                 }
                 break;
             case "PassAddFlight":
@@ -1913,6 +1939,12 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     flightsTable.setModel((DefaultTableModel) response.getObject());
+                    flightsTable.setModel((DefaultTableModel) response.getObject());
+                    this.addFlight.removeAllItems();
+                    this.addFlight.addItem("Flight");
+                    for (int i = 0; i < flightsTable.getRowCount(); i++) {
+                        this.addFlight.addItem("" + flightsTable.getValueAt(i, 0));
+                    }
                 }
                 break;
             case "PlaneInfo":
@@ -1932,7 +1964,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                     planesTable.setModel((DefaultTableModel) response.getObject());
                 }
                 break;
-            case "LocationInfo":                
+            case "LocationInfo":
                 model = (DefaultTableModel) locationsTable.getModel();
                 model.addRow((Object[]) arg);
                 id = (Object[]) arg;
@@ -1943,4 +1975,6 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 break;
         }
     }
+    
+    
 }
