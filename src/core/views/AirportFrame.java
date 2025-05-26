@@ -1832,6 +1832,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
         Object[] id;
         DefaultTableModel model;
         Response response;
+        int index;
         switch (type) {
             case "PassInfo":
                 model = (DefaultTableModel) passInfoTable.getModel();
@@ -1847,11 +1848,13 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
                     passInfoTable.setModel((DefaultTableModel) response.getObject());
+                    index = userSelect.getSelectedIndex();
                     userSelect.removeAllItems();
                     userSelect.addItem("Select User");
                     for (int i = 0; i < passInfoTable.getRowCount(); i++) {
                         userSelect.addItem(String.valueOf(passInfoTable.getValueAt(i, 0)));
                     }
+                    userSelect.setSelectedIndex(index);
                 }
                 break;
             case "PassAddFlight":
@@ -1884,7 +1887,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 } else {
                     if (response.getObject() != null) {
                         flightsTable.setModel((TableModel) response.getObject());
-                    }
+                    }                    
                     this.addFlight.removeAllItems();
                     this.flightDelayId.removeAllItems();
                     this.addFlight.addItem("Flight");
