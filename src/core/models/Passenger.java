@@ -64,7 +64,7 @@ public class Passenger extends Observable implements Cloneable {
     public ArrayList<Flight> getFlights() {
         return flights;
     }
-    public void addFlight (Flight flight) {
+    public void addFlight (Flight flight) {// setter
         this.flights.add(flight);
         flight.addPassenger(this);
         notifyObserver(null, "PassAddFlight");

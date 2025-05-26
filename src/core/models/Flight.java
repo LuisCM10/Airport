@@ -73,7 +73,7 @@ public class Flight extends Observable implements Cloneable {
         return passengers;
     }
     
-    public void addPassenger(Passenger passenger) {
+    public void addPassenger(Passenger passenger) {// es un setter
         this.passengers.add(passenger);
         notifyObserver(null, "FlightUpload");
     }
