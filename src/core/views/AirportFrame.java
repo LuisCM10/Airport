@@ -1406,7 +1406,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             passTable.setEnabledAt(5, true);
             passTable.setEnabledAt(6, true);
         }
-        
+
         this.update(null, "PassUpload");
         this.update(null, "FlightUpload");
         this.update(null, "PlaneUpload");
@@ -1415,7 +1415,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             passTable.setEnabledAt(i, true);
         }
         passTable.setEnabledAt(5, false);
-        passTable.setEnabledAt(6, false); 
+        passTable.setEnabledAt(6, false);
     }//GEN-LAST:event_administratorActionPerformed
 
     private void userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userActionPerformed
@@ -1431,7 +1431,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             passTable.setEnabledAt(6, false);
             passTable.setEnabledAt(7, false);
             passTable.setEnabledAt(11, false);
-        }        
+        }
         this.update(null, "PassUpload");
         this.update(null, "FlightUpload");
         this.update(null, "LocationUpload");
@@ -1572,15 +1572,15 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
 
     private void btnPassUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPassUpdateActionPerformed
         // TODO add your handling code here:
-        String id = passId.getText();
-        String firstname = passFirstName.getText();
-        String lastname = passLastName.getText();
-        String year = passBirthYear.getText();
-        String month = passBirthMonth.getItemAt(passBirthMonth.getSelectedIndex());
-        String day = passBirthDay.getItemAt(passBirthDay.getSelectedIndex());
-        String phoneCode = passPrefix.getText();
-        String phone = passNumTelefonic.getText();
-        String country = passCountry.getText();
+        String id = passUpdId.getText();
+        String firstname = passUpdFirstName.getText();
+        String lastname = passUpdLastName.getText();
+        String year = passUpdBirthYear.getText();
+        String month = passUpdBirthMonth.getItemAt(passUpdBirthMonth.getSelectedIndex());
+        String day = passUpdBirthDay.getItemAt(passUpdBirthDay.getSelectedIndex());
+        String phoneCode = passUpdPrefix.getText();
+        String phone = passUpdTelefonic.getText();
+        String country = passUpdCountry.getText();
 
         Response response = PassengerController.updatePassenger(id, firstname, lastname, year, month, day, phoneCode, phone, country);
         if (response.getStatus() >= 500) {
@@ -1589,14 +1589,14 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
-            passFirstName.setText("");
-            passLastName.setText("");
-            passBirthYear.setText("");
-            passBirthMonth.setSelectedIndex(0);
-            passBirthDay.setSelectedIndex(0);
-            passPrefix.setText("");
-            passNumTelefonic.setText("");
-            passCountry.setText("");
+            passUpdFirstName.setText("");
+            passUpdLastName.setText("");
+            passUpdBirthYear.setText("");
+            passUpdBirthMonth.setSelectedIndex(0);
+            passUpdBirthDay.setSelectedIndex(0);
+            passUpdPrefix.setText("");
+            passUpdTelefonic.setText("");
+            passUpdCountry.setText("");
         }
 
     }//GEN-LAST:event_btnPassUpdateActionPerformed
@@ -1668,13 +1668,11 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
     private void userSelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectActionPerformed
         try {
             String id = userSelect.getSelectedItem().toString();
-            if (!id.equals(userSelect.getItemAt(0))) {
-                passId.setText(id);
+            if (!id.equals(userSelect.getItemAt(0))) {                
                 passUpdId.setText(id);
                 PassengerIdToAddFlight.setText(id);
-                this.update(null, "PassAddFlight");                
+                this.update(null, "PassAddFlight");
             } else {
-                passId.setText("");
                 passUpdId.setText("");
                 PassengerIdToAddFlight.setText("");
             }
@@ -1863,16 +1861,19 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 } else if (response.getStatus() >= 400 && arg != null) {
                     JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, response.getMessage(), "Response Message", JOptionPane.INFORMATION_MESSAGE);
                     passflightsTable.setModel((DefaultTableModel) response.getObject());
                 }
                 break;
             case "FlightInfo":
-                model = (DefaultTableModel) flightsTable.getModel();
-                model.addRow((Object[]) arg);
-                id = (Object[]) arg;
-                this.addFlight.addItem("" + id[0]);
-                this.flightDelayId.addItem("" + id[0]);
+                try {
+                    model = (DefaultTableModel) flightsTable.getModel();
+                    model.addRow((Object[]) arg);
+                    id = (Object[]) arg;
+                    this.addFlight.addItem("" + id[0]);
+                    this.flightDelayId.addItem("" + id[0]);
+                } catch (Exception ex) {
+                    System.out.println("Error en update de la vista? ");
+                }
                 break;
             case "FlightUpload":
                 response = FlightController.getFlightstoTable((DefaultTableModel) flightsTable.getModel());
@@ -1883,7 +1884,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 } else {
                     if (response.getObject() != null) {
                         flightsTable.setModel((TableModel) response.getObject());
-                    }                    
+                    }
                     this.addFlight.removeAllItems();
                     this.flightDelayId.removeAllItems();
                     this.addFlight.addItem("Flight");
@@ -1901,19 +1902,23 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                 this.flightPlane.addItem("" + id[0]);
                 break;
             case "PlaneUpload":
-                response = PlaneController.getPlanesToTable((DefaultTableModel) planesTable.getModel());
-                if (response.getStatus() >= 500 && arg != null) {
-                    JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
-                } else if (response.getStatus() >= 400 && arg != null) {
-                    JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
-                } else {
-                    planesTable.setModel((DefaultTableModel) response.getObject());
-                    flightPlane.removeAllItems();
-                    flightPlane.addItem("Plane");
-                    for (int i = 0; i < planesTable.getRowCount(); i++) {
-                        this.flightPlane.addItem("" + planesTable.getValueAt(i, 0));
+                    response = PlaneController.getPlanesToTable((DefaultTableModel) planesTable.getModel());
+                    if (response.getStatus() >= 500 && arg != null) {
+                        JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.ERROR_MESSAGE);
+                    } else if (response.getStatus() >= 400 && arg != null) {
+                        JOptionPane.showMessageDialog(null, response.getMessage(), "Error " + response.getStatus(), JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        try {
+                        planesTable.setModel((DefaultTableModel) response.getObject());
+                        } catch (Exception ex) {
+                            System.out.println("Error en modificar tabla plane?");
+                        }
+                        flightPlane.removeAllItems();
+                        flightPlane.addItem("Plane");
+                        for (int i = 0; i < planesTable.getRowCount(); i++) {
+                            this.flightPlane.addItem("" + planesTable.getValueAt(i, 0));
+                        }
                     }
-                }
                 break;
             case "LocationInfo":
                 model = (DefaultTableModel) locationsTable.getModel();
@@ -1943,6 +1948,7 @@ public class AirportFrame extends javax.swing.JFrame implements Observer {
                         flightScaLocation.addItem("" + locationsTable.getValueAt(i, 0));
                     }
                 }
+                break;
         }
     }
 

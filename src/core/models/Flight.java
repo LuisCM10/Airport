@@ -31,7 +31,7 @@ public class Flight extends Observable implements Cloneable {
         super(new FlightController());
         this.id = id;
         this.passengers = new ArrayList<>();
-        this.plane = plane;
+        this.plane = plane;        
         this.departureLocation = departureLocation;
         this.scaleLocation = scaleLocation;
         this.arrivalLocation = arrivalLocation;
@@ -40,8 +40,6 @@ public class Flight extends Observable implements Cloneable {
         this.minutesDurationArrival = minutesDurationArrival;
         this.hoursDurationScale = hoursDurationScale;
         this.minutesDurationScale = minutesDurationScale;
-        
-        
     }
 
     // Getters necesarios
@@ -50,7 +48,7 @@ public class Flight extends Observable implements Cloneable {
     }
 
     public Plane getPlane() {
-        return plane;
+        return plane;     
     }
 
     public Location getDepartureLocation() {
@@ -72,7 +70,7 @@ public class Flight extends Observable implements Cloneable {
     public List<Passenger> getPassengers() {
         return passengers;
     }
-    
+
     public void addPassenger(Passenger passenger) {
         this.passengers.add(passenger);
         notifyObserver(null, "FlightUpload");
@@ -98,20 +96,17 @@ public class Flight extends Observable implements Cloneable {
     public int getMinutesDurationArrival() {
         return minutesDurationArrival;
     }
-    
 
     @Override
     public void notifyObserver(Object object, String type) {
-        observer.update( object, type);
+        observer.update(object, type);
     }
 
     @Override
-    public Flight clone(){
-        Flight clone = new Flight(this.id, this.plane, this.departureLocation, this.scaleLocation, this.arrivalLocation, this.departureDate, this.hoursDurationArrival, this.minutesDurationArrival, this.hoursDurationScale, this.minutesDurationScale );
+    public Flight clone() {
+        Flight clone = new Flight(this.id, this.plane, this.departureLocation, this.scaleLocation, this.arrivalLocation, this.departureDate, this.hoursDurationArrival, this.minutesDurationArrival, this.hoursDurationScale, this.minutesDurationScale);
         clone.getPassengers().addAll(passengers);
         return clone;
     }
-    
-    
 
 }

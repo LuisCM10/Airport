@@ -28,8 +28,8 @@ public class FlightController extends Observable implements Observer{
     public static Response createFlight (String id, String planeId, String departureLocationId, String arrivalLocationId, String scaleLocationId, String year, String month, String day, String hour, String minutes, String hourDurationArrival, String minutesDurationArrival, String hoursDurationScale, String minutesDurationScale) {
         try {
             Response response;
-            Plane plane = null;
-            Location departure = null, arrival = null, scale = null;
+            Plane plane;
+            Location departure, arrival, scale = null;
             int yearInt, monthInt, dayInt, hourInt, minutesInt, hourDurationArrivalInt, minutesDurationArrivalInt, hoursDurationScaleInt, minutesDurationScaleInt;
             LocalDateTime departureDate;
             
@@ -55,6 +55,7 @@ public class FlightController extends Observable implements Observer{
             if (response.getStatus() >= 400) {
                 return response;
             }
+            plane = (Plane) response.getObject();
             if (departureLocationId.equals("Location")) {
                 return new Response("Location departure must be selected", Status.BAD_REQUEST);
             }
@@ -62,6 +63,7 @@ public class FlightController extends Observable implements Observer{
             if (response.getStatus() >= 400) {
                 return response;
             }
+            departure = (Location) response.getObject();
             try {
                 yearInt = Integer.parseInt(year);
                 if (yearInt < 0) {
@@ -105,6 +107,7 @@ public class FlightController extends Observable implements Observer{
             if (response.getStatus() >= 400) {
                 return response;
             }
+            arrival = (Location) response.getObject();
             try {
                 hourDurationArrivalInt = Integer.parseInt(hourDurationArrival);                
             } catch (NumberFormatException ex) {
@@ -148,7 +151,7 @@ public class FlightController extends Observable implements Observer{
                 }
                 hoursDurationScaleInt = 0;
                 minutesDurationScaleInt = 0;
-            }                                     
+            }
             FlightStorage storage = FlightStorage.getInstance();
             if (!storage.add(new Flight( id, plane, departure, scale, arrival, departureDate, hourDurationArrivalInt, minutesDurationArrivalInt, hoursDurationScaleInt, minutesDurationScaleInt))){
                 return new Response("A flight with that id already exists", Status.BAD_REQUEST);
